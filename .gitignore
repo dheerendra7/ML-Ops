@@ -1,0 +1,14 @@
+# Local environment and secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+kubeconfig
+.kube/
+
+# Editor and OS noise
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
