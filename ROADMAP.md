@@ -23,7 +23,7 @@ This roadmap describes learning-content priorities, not promised release dates.
 - [x] Reproducibility, lineage, and experiment tracking guide plus illustrative run-record template
 - [x] Cost controls and GPU scheduling guide plus explicitly non-runnable GPU Job template
 - [x] Core Kubernetes integration labs executed in disposable Kind clusters for v1.34.3 and v1.35.0 via CI; see the [validation matrix](docs/testing/lab-validation-matrix.md) for run evidence
-- [ ] Full Kubeflow/KFP backend, GPU hardware, and external secret provider validation across named target installations
+- [ ] Validate a full Kubeflow/community distribution and GPU hardware; verify production Vault Kubernetes auth/TLS/HA and additional cloud-provider secret-manager integrations in named target environments. The local KFP backend and Vault/ESO dev-mode workflows have passed their scoped integration tests.
 
 ## Quality engineering progress
 
