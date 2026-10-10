@@ -38,6 +38,7 @@ This roadmap describes learning-content priorities, not promised release dates.
 - [x] Add an actionable observability guide covering logs, metrics, traces, alert design and model/data signals.
 - [x] Add a lineage/run-record template and practical cost/GPU scheduling guidance with cluster-specific caveats.
 - [x] Add a synthetic KFP artifact-to-quality-gate pipeline and compile it in CI.
+- [x] Run the synthetic KFP pipeline locally in CI and test quality-gate boundaries, including rejected candidates and invalid metrics.
 - [x] Extend repository checks to syntax-check Python files.
 - [x] Add semantic regression assertions for RBAC, GPU, lineage, resource-policy, and container examples.
 - [x] Add live disposable-Kubernetes integration checks for ResourceQuota, LimitRange defaults, Job completion, RBAC allow/deny, and synthetic Secret rotation on two pinned Kubernetes versions.
