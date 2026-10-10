@@ -1,2 +1,2 @@
-# Pin the SDK used to compile this example; choose a backend-compatible version for real deployments.
-kfp==2.17.2
+# Pin the SDK used to compile this example; choose a backend-compatible, published version for real deployments.
+kfp==2.17.0
