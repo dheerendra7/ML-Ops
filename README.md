@@ -28,6 +28,7 @@ Start with [`docs/LEARNING-PATH.md`](docs/LEARNING-PATH.md), then use the topic 
 - [KFP component types](docs/kubeflow/kfp-component-types.md)
 - [Profiles, namespaces, and isolation](docs/kubeflow/profiles-namespaces-isolation.md)
 - [Kubernetes resource controls](docs/kubernetes-foundations/resource-controls.md)
+- [Kubernetes workloads and configuration](docs/kubernetes-foundations/workloads-and-configuration.md)
 - [Troubleshooting checklist](docs/troubleshooting/debugging-checklist.md)
 - [Production-readiness checklist](docs/production/readiness-checklist.md)
 - [Interview revision cards](docs/interview/revision-cards.md)
