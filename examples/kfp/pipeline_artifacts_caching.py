@@ -33,15 +33,29 @@ def train_toy_model(
     model: Output[Model],
     offset: float,
 ) -> None:
-    """Build a tiny baseline artifact so artifact hand-off is observable."""
+    """Read and validate a Dataset artifact, then write a tiny baseline Model."""
     import json
+    import math
 
     with open(dataset.path, "r", encoding="utf-8") as handle:
         rows = json.load(handle)
-    if not rows:
-        raise ValueError("Training dataset must contain at least one row")
+    if not isinstance(rows, list) or not rows:
+        raise ValueError("Training dataset must be a non-empty JSON list")
 
-    mean_y = sum(float(row["y"]) for row in rows) / len(rows)
+    targets = []
+    for index, row in enumerate(rows):
+        if not isinstance(row, dict) or "x" not in row or "y" not in row:
+            raise ValueError(f"Dataset row {index} must contain numeric x and y fields")
+        try:
+            x_value = float(row["x"])
+            y_value = float(row["y"])
+        except (TypeError, ValueError) as exc:
+            raise ValueError(f"Dataset row {index} has non-numeric x/y values") from exc
+        if not math.isfinite(x_value) or not math.isfinite(y_value):
+            raise ValueError(f"Dataset row {index} has non-finite x/y values")
+        targets.append(y_value)
+
+    mean_y = sum(targets) / len(targets)
     toy_model = {
         "model_type": "synthetic-mean-baseline",
         "mean_prediction": mean_y + offset,
@@ -56,14 +70,33 @@ def train_toy_model(
 
 @dsl.component(base_image="python:3.12-slim")
 def evaluate_toy_model(model: Input[Model]) -> float:
-    """Return a synthetic score in [0, 1], not a statistical ML metric."""
+    """Read and validate a Model artifact, then return an illustrative score."""
     import json
+    import math
 
     with open(model.path, "r", encoding="utf-8") as handle:
         toy_model = json.load(handle)
+    if not isinstance(toy_model, dict):
+        raise ValueError("Model artifact must contain a JSON object")
+    if toy_model.get("model_type") != "synthetic-mean-baseline":
+        raise ValueError("Model artifact has an unexpected model_type")
 
-    prediction = float(toy_model["mean_prediction"])
-    # The known synthetic dataset has mean y = 2.0.
+    training_rows = toy_model.get("training_rows")
+    if (
+        not isinstance(training_rows, int)
+        or isinstance(training_rows, bool)
+        or training_rows < 1
+    ):
+        raise ValueError("Model artifact must record a positive training_rows count")
+    try:
+        prediction = float(toy_model["mean_prediction"])
+    except (KeyError, TypeError, ValueError) as exc:
+        raise ValueError("Model artifact must contain a numeric mean_prediction") from exc
+    if not math.isfinite(prediction):
+        raise ValueError("Model artifact mean_prediction must be finite")
+
+    # The known synthetic dataset has mean y = 2.0. This is an illustrative
+    # teaching score, not a statistically meaningful production metric.
     absolute_error = abs(prediction - 2.0)
     return 1.0 / (1.0 + absolute_error)
 
