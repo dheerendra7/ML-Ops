@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Check Markdown local links, fenced blocks, and YAML syntax in this repository."""
+"""Check local Markdown links, code fences, YAML syntax, and Python syntax."""
 
 from __future__ import annotations
 
@@ -32,7 +32,6 @@ def parse_yaml(text: str, label: str) -> None:
         yaml_count += 1
     except yaml.YAMLError as exc:
         errors.append(f"{label}: invalid YAML: {exc}")
-
 
 
 def check_python(path: Path) -> None:
