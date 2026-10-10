@@ -74,7 +74,7 @@ def check_local_pipeline() -> int:
     with tempfile.TemporaryDirectory(prefix="mlops-kfp-local-") as pipeline_root:
         # Run task containers as the current runner user so files written to
         # mounted temporary paths remain removable by the host process.
-        docker_runner_args = {}
+        docker_runner_args = {"environment": {"HOME": "/tmp"}}
         if hasattr(os, "getuid") and hasattr(os, "getgid"):
             docker_runner_args["user"] = f"{os.getuid()}:{os.getgid()}"
 
