@@ -11,8 +11,8 @@ Read [architecture](kubeflow/architecture.md). A platform installation may not e
 **You should be able to:** describe pipeline authoring, submission, execution, and observation at a high level.
 
 ## Stage 3 — Pipeline components
-Read [KFP component types](kubeflow/kfp-component-types.md).
-**You should be able to:** choose a component type and justify the dependency and runtime trade-offs.
+Read [KFP component types](kubeflow/kfp-component-types.md), then [KFP run lifecycle, artifacts, caching, retries, and quality gates](kubeflow/pipeline-lifecycle-artifacts-caching-retries.md). Also study [container image security and reproducibility](containers/image-security-and-reproducibility.md).
+**You should be able to:** choose a component type, explain artifact hand-off, judge when caching/retries are safe, and explain how a quality gate blocks promotion.
 
 ## Stage 4 — Multi-user and resource isolation
 Read [Profiles and namespaces](kubeflow/profiles-namespaces-isolation.md), then inspect the YAML examples. Then complete [Lab 01 — resource governance](labs/resource-governance.md) in a disposable cluster.
