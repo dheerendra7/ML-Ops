@@ -11,14 +11,14 @@ The second layer is deliberately separate from the normal handbook CI because in
 
 The workflow at [kfp-backend-smoke.yml](../../.github/workflows/kfp-backend-smoke.yml) creates a disposable Kubernetes 1.34.3 cluster, installs the KFP 2.17.0 cluster-scoped resources and platform-agnostic overlay, then submits two runs with the pinned Python SDK:
 
-| Run | Parameters | Expected terminal state |
+| Run | Parameters | Expected evidence |
 |---|---|---|
-| handbook-backend-pass | offset=0.0, minimum_score=0.8 | SUCCEEDED |
-| handbook-backend-rejected-candidate | offset=1.0, minimum_score=0.8 | FAILED at the quality gate |
+| handbook-backend-pass | offset=0.0, minimum_score=0.8 | Run `SUCCEEDED`; dataset, training, evaluation, and gate tasks succeed; Dataset/Model artifact IDs are present on producer outputs and consumer inputs |
+| handbook-backend-rejected-candidate | offset=1.0, minimum_score=0.8 | Run `FAILED`; the dataset, training, and evaluation tasks succeed; the quality-gate task itself is `FAILED`; artifact references are still present upstream |
 
 The example pipeline uses synthetic rows and an illustrative score. It is not a real model-training benchmark or a production-quality metric. The failed candidate is a deliberate negative test.
 
-The runner waits for the KFP API before creating the experiment, compiles the package, and waits for each run's terminal state. A successful KFP backend test must show **both** expected outcomes; a successful installation step or API health check alone is not enough.
+The runner waits for the KFP API before creating the experiment, compiles the package, and waits for each run's terminal state. It then fetches each full run detail and asserts task-level states plus non-empty Dataset/Model artifact IDs for producer outputs and consumer inputs. The negative case fails closed unless all upstream tasks succeeded and the gate task itself failed. A successful installation step, API health check, or generic `FAILED` run alone is not enough.
 
 ## Running the workflow
 
@@ -48,9 +48,9 @@ For the specific KFP version, Kubernetes node image, SDK pin and CI environment 
 - the standalone manifests can install and reach the configured Deployment readiness criteria;
 - the Python SDK can connect through the configured API endpoint;
 - a compiled synthetic pipeline package can be submitted as a remote run;
-- the backend can schedule and execute the sample tasks and transfer declared artifacts;
-- a valid candidate completes successfully;
-- the intentionally below-threshold candidate ends in a failed state.
+- the backend schedules the sample tasks and exposes non-empty artifact references for Dataset/Model producer outputs and consumer inputs;
+- every expected task on a valid candidate completes successfully;
+- the intentionally below-threshold candidate fails specifically at the quality-gate task after its upstream tasks succeed.
 
 It is still only a focused smoke test. It does not establish production availability, performance, security certification, multi-user Profile behavior, a full community Kubeflow distribution, cloud IAM, external secret-manager integration, GPU execution or data/model quality for a real ML use-case.
 
@@ -65,7 +65,8 @@ It is still only a focused smoke test. It does not establish production availabi
 | API health check | Verify the port-forward process and service HTTP port; retry SDK client initialization while startup completes. Start kubectl before isolating HOME for the KFP client, otherwise kubectl may lose the Kind kubeconfig. |
 | Experiment/run submission | Inspect API response, namespace/context and backend logs without printing credentials |
 | Run waits but does not finish | Check workflow-controller/task Pods, image pulls, task logs, artifact store and admission/quota issues |
-| Positive run succeeds but negative run also succeeds | Inspect quality-gate component and submitted parameters; a pipeline failure alone is insufficient if it failed for an unrelated runtime error |
+| Negative run fails for an unrelated reason | The test checks task-level states, verifies that upstream tasks succeeded, and requires the quality-gate task itself to be FAILED; inspect that task's detail and pod logs without exposing credentials |
+| Artifact hand-off is missing | The test requires Dataset/Model artifact IDs on declared producer outputs and consumer inputs; inspect task details and KFP metadata/artifact-store configuration |
 
 The workflow prints safe Kubernetes diagnostics if the backend job fails. Use those diagnostics instead of claiming remote execution passed just because the control plane started.
 
