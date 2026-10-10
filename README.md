@@ -31,6 +31,7 @@ Start with [`docs/LEARNING-PATH.md`](docs/LEARNING-PATH.md), then use the topic 
 - [Kubernetes workloads and configuration](docs/kubernetes-foundations/workloads-and-configuration.md)
 - [Container image security and reproducibility](docs/containers/image-security-and-reproducibility.md)
 - [KFP lifecycle, artifacts, caching, retries, and quality gates](docs/kubeflow/pipeline-lifecycle-artifacts-caching-retries.md)
+- [Model evaluation gates and promotion](docs/production/model-evaluation-and-promotion.md)
 - [Troubleshooting checklist](docs/troubleshooting/debugging-checklist.md)
 - [Production-readiness checklist](docs/production/readiness-checklist.md)
 - [Interview revision cards](docs/interview/revision-cards.md)
