@@ -23,7 +23,109 @@ EXPECTED_APPROVAL = "approved-for-teaching-example-only"
 
 
 def normalise_state(value: Any) -> str:
-    return str(value or "").rsplit(".", 1)[-1].lower()
+    state = str(value or "").rsplit(".", 1)[-1].lower()
+    # The v2beta1 API uses values such as SUCCEEDED, while some generated
+    # clients may expose the enum name with its RUNTIME_STATE_ prefix.
+    if state.startswith("runtime_state_"):
+        state = state.removeprefix("runtime_state_")
+    return state
+
+
+def read_field(value: Any, name: str) -> Any:
+    """Read an API model field without coupling tests to dict vs SDK objects."""
+    if isinstance(value, dict):
+        return value.get(name)
+    return getattr(value, name, None)
+
+
+def run_task_details(run_detail: Any) -> dict[str, Any]:
+    """Return unique named task details; fail closed if the API omitted them."""
+    runtime = read_field(run_detail, "run_details")
+    details = read_field(runtime, "task_details")
+    if not isinstance(details, (list, tuple)) or not details:
+        raise AssertionError(
+            "KFP run response did not include non-empty run_details.task_details"
+        )
+
+    named: dict[str, Any] = {}
+    for detail in details:
+        name = str(read_field(detail, "display_name") or "").strip()
+        if not name:
+            raise AssertionError("KFP task detail is missing display_name")
+        if name in named:
+            raise AssertionError(f"KFP response contains duplicate task name {name!r}")
+        named[name] = detail
+    return named
+
+
+def require_task_state(
+    tasks: dict[str, Any], task_name: str, expected_state: str
+) -> Any:
+    detail = tasks.get(task_name)
+    if detail is None:
+        raise AssertionError(
+            f"Expected task {task_name!r} was not present in KFP run details; "
+            f"observed tasks={sorted(tasks)}"
+        )
+    actual = normalise_state(read_field(detail, "state"))
+    if actual != expected_state:
+        error = read_field(detail, "error")
+        message = read_field(error, "message") if error is not None else None
+        raise AssertionError(
+            f"Task {task_name!r} expected state {expected_state!r}, got "
+            f"{actual!r}; error_message={message!r}"
+        )
+    return detail
+
+
+def require_artifact_reference(
+    task: Any, direction: str, artifact_name: str
+) -> None:
+    """Assert an artifact ID was recorded without printing metadata values."""
+    artifacts = read_field(task, direction)
+    artifact_list = (
+        artifacts.get(artifact_name) if isinstance(artifacts, dict) else None
+    )
+    artifact_ids = read_field(artifact_list, "artifact_ids")
+    if not isinstance(artifact_ids, (list, tuple)) or not artifact_ids:
+        raise AssertionError(
+            f"Expected a recorded {direction} artifact reference "
+            f"for {artifact_name!r}; no artifact IDs were returned"
+        )
+
+
+def verify_successful_run(run_detail: Any) -> None:
+    tasks = run_task_details(run_detail)
+    dataset = require_task_state(tasks, "create-toy-dataset", "succeeded")
+    trainer = require_task_state(tasks, "train-toy-model", "succeeded")
+    evaluator = require_task_state(tasks, "evaluate-toy-model", "succeeded")
+    require_task_state(tasks, "enforce-quality-gate", "succeeded")
+    require_artifact_reference(dataset, "outputs", "dataset")
+    require_artifact_reference(trainer, "inputs", "dataset")
+    require_artifact_reference(trainer, "outputs", "model")
+    require_artifact_reference(evaluator, "inputs", "model")
+    print(
+        "PASS: remote run task states and Dataset/Model artifact references "
+        "confirm the expected end-to-end success path"
+    )
+
+
+def verify_rejected_run(run_detail: Any) -> None:
+    tasks = run_task_details(run_detail)
+    # A generic FAILED run is not enough: every upstream task must succeed and
+    # the quality-gate task itself must be the one that rejects the candidate.
+    dataset = require_task_state(tasks, "create-toy-dataset", "succeeded")
+    trainer = require_task_state(tasks, "train-toy-model", "succeeded")
+    evaluator = require_task_state(tasks, "evaluate-toy-model", "succeeded")
+    require_task_state(tasks, "enforce-quality-gate", "failed")
+    require_artifact_reference(dataset, "outputs", "dataset")
+    require_artifact_reference(trainer, "inputs", "dataset")
+    require_artifact_reference(trainer, "outputs", "model")
+    require_artifact_reference(evaluator, "inputs", "model")
+    print(
+        "PASS: remote rejected-candidate run failed specifically at the "
+        "quality gate after successful upstream execution and artifact hand-off"
+    )
 
 
 def wait_for_api(host: str, attempts: int, delay_seconds: int) -> Client:
@@ -90,6 +192,9 @@ def main() -> int:
         raise AssertionError(
             f"Remote passing pipeline run expected SUCCEEDED, got {passing_result.state!r}"
         )
+    # Fetch the full run again so task details and artifact references are
+    # checked explicitly rather than inferred from the terminal run state.
+    verify_successful_run(client.get_run(passing.run_id))
     print(f"PASS: remote KFP success path completed (run_id={passing.run_id})")
 
     rejected = client.create_run_from_pipeline_package(
@@ -110,11 +215,15 @@ def main() -> int:
             "Remote rejected-candidate run expected FAILED at the quality gate, "
             f"got {rejected_result.state!r}"
         )
+    verify_rejected_run(client.get_run(rejected.run_id))
     print(
-        "PASS: remote KFP rejected-candidate path ended FAILED as expected "
+        "PASS: remote KFP rejected-candidate path ended FAILED at the expected task "
         f"(run_id={rejected.run_id})"
     )
-    print("KFP backend smoke test passed: API, run submission, artifact flow, and gate rejection.")
+    print(
+        "KFP backend smoke test passed: API, run submission, upstream task "
+        "states, Dataset/Model artifact references, and gate-specific rejection."
+    )
     return 0
 
 
