@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import ast
 import re
 import sys
 from pathlib import Path
@@ -20,6 +21,7 @@ FENCE_RE = re.compile(r"^\s*((?:\x60){3,}|~{3,})(.*)$")
 errors: list[str] = []
 markdown_count = 0
 yaml_count = 0
+python_count = 0
 
 
 def parse_yaml(text: str, label: str) -> None:
@@ -30,6 +32,17 @@ def parse_yaml(text: str, label: str) -> None:
         yaml_count += 1
     except yaml.YAMLError as exc:
         errors.append(f"{label}: invalid YAML: {exc}")
+
+
+
+def check_python(path: Path) -> None:
+    """Parse a Python source file without executing it."""
+    global python_count
+    python_count += 1
+    try:
+        ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
+    except (SyntaxError, UnicodeDecodeError) as exc:
+        errors.append(f"{path.relative_to(ROOT)}: invalid Python syntax: {exc}")
 
 
 def check_markdown(path: Path) -> None:
@@ -106,6 +119,10 @@ def main() -> int:
         if ".git" not in path.parts:
             check_markdown(path)
 
+    for path in sorted(ROOT.rglob("*.py")):
+        if ".git" not in path.parts:
+            check_python(path)
+
     for suffix in ("*.yaml", "*.yml"):
         for path in sorted(ROOT.rglob(suffix)):
             if ".git" not in path.parts:
@@ -117,7 +134,7 @@ def main() -> int:
             print(f" - {error}")
         return 1
 
-    print(f"Documentation validation passed: {markdown_count} Markdown files checked; {yaml_count} YAML files/code fences parsed.")
+    print(f"Documentation validation passed: {markdown_count} Markdown files checked; {yaml_count} YAML files/code fences parsed; {python_count} Python files syntax-checked.")
     return 0
 
 
