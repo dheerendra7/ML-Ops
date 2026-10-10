@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import math
+import os
 import sys
 import tempfile
 from pathlib import Path
@@ -71,8 +72,14 @@ def check_local_pipeline() -> int:
     # DockerRunner intentionally executes the same containerized component type
     # described in the guide. The local run is not a remote KFP backend test.
     with tempfile.TemporaryDirectory(prefix="mlops-kfp-local-") as pipeline_root:
+        # Run task containers as the current runner user so files written to
+        # mounted temporary paths remain removable by the host process.
+        docker_runner_args = {}
+        if hasattr(os, "getuid") and hasattr(os, "getgid"):
+            docker_runner_args["user"] = f"{os.getuid()}:{os.getgid()}"
+
         local.init(
-            runner=local.DockerRunner(),
+            runner=local.DockerRunner(**docker_runner_args),
             pipeline_root=pipeline_root,
             raise_on_error=True,
             enable_caching=False,
