@@ -29,6 +29,8 @@ Start with [`docs/LEARNING-PATH.md`](docs/LEARNING-PATH.md), then use the topic 
 - [Profiles, namespaces, and isolation](docs/kubeflow/profiles-namespaces-isolation.md)
 - [Kubernetes resource controls](docs/kubernetes-foundations/resource-controls.md)
 - [Kubernetes workloads and configuration](docs/kubernetes-foundations/workloads-and-configuration.md)
+- [Container image security and reproducibility](docs/containers/image-security-and-reproducibility.md)
+- [KFP lifecycle, artifacts, caching, retries, and quality gates](docs/kubeflow/pipeline-lifecycle-artifacts-caching-retries.md)
 - [Troubleshooting checklist](docs/troubleshooting/debugging-checklist.md)
 - [Production-readiness checklist](docs/production/readiness-checklist.md)
 - [Interview revision cards](docs/interview/revision-cards.md)
@@ -39,8 +41,8 @@ Start with [`docs/LEARNING-PATH.md`](docs/LEARNING-PATH.md), then use the topic 
 ## Hands-on learning and automated checks
 
 - [Lab 01 — Kubernetes resource governance](docs/labs/resource-governance.md) walks through ResourceQuota, LimitRange, server-side dry run, expected quota rejection, troubleshooting, and cleanup.
-- GitHub Actions checks relative Markdown links, fenced code-block closure, and YAML syntax on pushes and pull requests.
-- These automated checks are static quality gates. They do **not** prove cluster behavior; live testing against a named Kubernetes/Kubeflow version remains separate.
+- GitHub Actions checks relative Markdown links, fenced code-block closure, YAML syntax, Python source syntax, KFP pipeline compilation, and the container image smoke test on pushes and pull requests.
+- These checks validate docs, compilation, and a local container smoke test. They do **not** prove a live Kubernetes/Kubeflow deployment works; cluster testing against a named version remains separate.
 
 ## How each lesson is structured
 
