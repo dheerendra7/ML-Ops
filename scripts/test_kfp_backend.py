@@ -38,8 +38,16 @@ def read_field(value: Any, name: str) -> Any:
     return getattr(value, name, None)
 
 
+EXPECTED_PIPELINE_TASKS = {
+    "create-toy-dataset",
+    "train-toy-model",
+    "evaluate-toy-model",
+    "enforce-quality-gate",
+}
+
+
 def run_task_details(run_detail: Any) -> dict[str, Any]:
-    """Return unique named task details; fail closed if the API omitted them."""
+    """Select required pipeline tasks and ignore duplicated internal executor nodes."""
     runtime = read_field(run_detail, "run_details")
     details = read_field(runtime, "task_details")
     if not isinstance(details, (list, tuple)) or not details:
@@ -48,13 +56,29 @@ def run_task_details(run_detail: Any) -> dict[str, Any]:
         )
 
     named: dict[str, Any] = {}
+    observed_names: set[str] = set()
     for detail in details:
         name = str(read_field(detail, "display_name") or "").strip()
         if not name:
-            raise AssertionError("KFP task detail is missing display_name")
+            continue
+        observed_names.add(name)
+        # A KFP run may include internal implementation nodes such as repeated
+        # "executor" entries. Only named pipeline components are used for
+        # these assertions; duplicate expected component names remain errors.
+        if name not in EXPECTED_PIPELINE_TASKS:
+            continue
         if name in named:
-            raise AssertionError(f"KFP response contains duplicate task name {name!r}")
+            raise AssertionError(
+                f"KFP response contains duplicate pipeline task {name!r}"
+            )
         named[name] = detail
+
+    missing = EXPECTED_PIPELINE_TASKS - set(named)
+    if missing:
+        raise AssertionError(
+            f"KFP run details omitted expected pipeline task(s): {sorted(missing)}; "
+            f"observed display names={sorted(observed_names)}"
+        )
     return named
 
 
