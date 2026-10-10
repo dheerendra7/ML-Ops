@@ -17,7 +17,8 @@ This roadmap describes learning-content priorities, not promised release dates.
 - [x] KFP lifecycle, artifacts, caching, retries, parameters, and quality-gate example with compile CI
 - [x] Model evaluation gates and promotion strategies guide, linked to the synthetic KFP gate example
 - [x] Namespace-scoped least-privilege RBAC verification lab
-- [ ] Secret management, rotation, and external secret integration lab
+- [x] Kubernetes Secret handling and safe rotation lab (synthetic values only)
+- [ ] Provider-specific external secret manager integration lab (requires a chosen provider and matching test environment)
 - [x] Observability: logs, metrics, traces, alerts, and ML/data pipeline signals guide
 - [x] Reproducibility, lineage, and experiment tracking guide plus illustrative run-record template
 - [x] Cost controls and GPU scheduling guide plus explicitly non-runnable GPU Job template
@@ -32,6 +33,7 @@ This roadmap describes learning-content priorities, not promised release dates.
 - [x] Add container image guidance, a non-root sample image, and a CI smoke test.
 - [x] Add an evidence-focused model evaluation and staged-promotion guide.
 - [x] Add a namespace-scoped RBAC lab that tests both expected allow and deny outcomes.
+- [x] Add a Secret handling/rotation lab that uses only synthetic values and documents external-provider prerequisites.
 - [x] Add an actionable observability guide covering logs, metrics, traces, alert design and model/data signals.
 - [x] Add a lineage/run-record template and practical cost/GPU scheduling guidance with cluster-specific caveats.
 - [x] Add a synthetic KFP artifact-to-quality-gate pipeline and compile it in CI.
