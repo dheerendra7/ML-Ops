@@ -78,19 +78,42 @@ def require_task_state(
     return detail
 
 
-def require_artifact_reference(
-    task: Any, direction: str, artifact_name: str
-) -> None:
-    """Assert an artifact ID was recorded without printing metadata values."""
+def artifact_ids_for(task: Any, direction: str, artifact_name: str) -> list[str]:
+    """Return non-empty artifact IDs, without logging IDs or artifact metadata."""
     artifacts = read_field(task, direction)
     artifact_list = (
         artifacts.get(artifact_name) if isinstance(artifacts, dict) else None
     )
     artifact_ids = read_field(artifact_list, "artifact_ids")
-    if not isinstance(artifact_ids, (list, tuple)) or not artifact_ids:
+    if (
+        not isinstance(artifact_ids, (list, tuple))
+        or not artifact_ids
+        or any(not isinstance(value, (str, int)) or not str(value).strip() for value in artifact_ids)
+    ):
         raise AssertionError(
             f"Expected a recorded {direction} artifact reference "
-            f"for {artifact_name!r}; no artifact IDs were returned"
+            f"for {artifact_name!r}; no valid artifact IDs were returned"
+        )
+    return [str(value) for value in artifact_ids]
+
+
+def require_artifact_reference(
+    task: Any, direction: str, artifact_name: str
+) -> None:
+    """Assert an artifact ID was recorded without printing metadata values."""
+    artifact_ids_for(task, direction, artifact_name)
+
+
+def require_artifact_handoff(
+    producer_task: Any, consumer_task: Any, artifact_name: str
+) -> None:
+    """Ensure consumer inputs reference the same artifacts the producer emitted."""
+    produced_ids = artifact_ids_for(producer_task, "outputs", artifact_name)
+    consumed_ids = artifact_ids_for(consumer_task, "inputs", artifact_name)
+    if set(produced_ids) != set(consumed_ids):
+        raise AssertionError(
+            f"Artifact hand-off mismatch for {artifact_name!r}: "
+            "producer output IDs and consumer input IDs differ"
         )
 
 
@@ -104,6 +127,10 @@ def verify_successful_run(run_detail: Any) -> None:
     require_artifact_reference(trainer, "inputs", "dataset")
     require_artifact_reference(trainer, "outputs", "model")
     require_artifact_reference(evaluator, "inputs", "model")
+    require_artifact_handoff(dataset, trainer, "dataset")
+    require_artifact_handoff(trainer, evaluator, "model")
+    require_artifact_handoff(dataset, trainer, "dataset")
+    require_artifact_handoff(trainer, evaluator, "model")
     print(
         "PASS: remote run task states and Dataset/Model artifact references "
         "confirm the expected end-to-end success path"
