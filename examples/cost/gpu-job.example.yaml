@@ -1,0 +1,35 @@
+# TEMPLATE ONLY — replace image with an approved GPU-enabled image and a verified digest.
+# Do not apply this file while the registry.example.invalid placeholder remains.
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: gpu-smoke-template
+  namespace: mlops-gpu-lab # Create/verify a disposable namespace before use.
+  labels:
+    app.kubernetes.io/name: gpu-smoke-template
+spec:
+  backoffLimit: 0
+  activeDeadlineSeconds: 300
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: gpu-smoke-template
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: gpu-check
+          image: "registry.example.invalid/team/gpu-workload@sha256:REPLACE_WITH_REVIEWED_DIGEST"
+          imagePullPolicy: IfNotPresent
+          # The approved image must include a compatible Python/PyTorch/CUDA stack.
+          command:
+            - python
+            - -c
+            - "import torch; assert torch.cuda.is_available(), 'GPU unavailable'; print(torch.cuda.get_device_name(0))"
+          resources:
+            requests:
+              cpu: 500m
+              memory: 1Gi
+            limits:
+              cpu: "1"
+              memory: 2Gi
+              nvidia.com/gpu: 1
