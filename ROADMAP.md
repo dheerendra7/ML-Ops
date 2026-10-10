@@ -38,6 +38,7 @@ This roadmap describes learning-content priorities, not promised release dates.
 - [x] Add a lineage/run-record template and practical cost/GPU scheduling guidance with cluster-specific caveats.
 - [x] Add a synthetic KFP artifact-to-quality-gate pipeline and compile it in CI.
 - [x] Extend repository checks to syntax-check Python files.
+- [x] Add semantic regression assertions for RBAC, GPU, lineage, resource-policy, and container examples.
 - [ ] Run the lab on explicitly documented Kubernetes versions and record results; this has **not** been completed by the static CI checks.
 
 ## Quality bar
