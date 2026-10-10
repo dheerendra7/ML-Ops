@@ -35,6 +35,12 @@ Start with [`docs/LEARNING-PATH.md`](docs/LEARNING-PATH.md), then use the topic 
 - [Source register](SOURCES.md)
 - [Roadmap](ROADMAP.md)
 
+## Hands-on learning and automated checks
+
+- [Lab 01 — Kubernetes resource governance](docs/labs/resource-governance.md) walks through ResourceQuota, LimitRange, server-side dry run, expected quota rejection, troubleshooting, and cleanup.
+- GitHub Actions checks relative Markdown links, fenced code-block closure, and YAML syntax on pushes and pull requests.
+- These automated checks are static quality gates. They do **not** prove cluster behavior; live testing against a named Kubernetes/Kubeflow version remains separate.
+
 ## How each lesson is structured
 
 - **5-minute snapshot:** the core idea and when it matters.
