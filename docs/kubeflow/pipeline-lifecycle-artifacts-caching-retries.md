@@ -100,11 +100,14 @@ python examples/kfp/pipeline_artifacts_caching.py --output $env:TEMP\artifact-ga
 
 Expected result: compiler output mein generated pipeline file ka path print hota hai aur YAML file non-empty hoti hai. Is command se **pipeline compile hoti hai; remote KFP run submit nahi hota**. CI bhi isi compilation step ko validate karta hai.
 
-CI ab ek additional step bhi chalata hai: [local runtime regression test](../../scripts/test_kfp_local.py). KFP `DockerRunner` se successful artifact-to-gate flow execute hota hai, aur intentionally below-threshold candidate ka pipeline failure bhi verify hota hai. Gate ka boundary behavior invalid scores/thresholds (NaN/infinity/out-of-range) ke saath check hota hai. Is test ko run karne ke liye local Docker daemon chahiye:
+CI ab ek additional step bhi chalata hai: [local runtime regression test](../../scripts/test_kfp_local.py). KFP `DockerRunner` se successful artifact-to-gate flow execute hota hai, aur intentionally below-threshold candidate ka pipeline failure bhi verify hota hai. Gate ka boundary behavior invalid scores/thresholds (NaN/infinity/out-of-range) ke saath check hota hai. Is test ke liye Docker daemon **aur Docker SDK for Python** chahiye; CI-specific dependencies install karo:
 
 ~~~bash
+python -m pip install -r examples/kfp/requirements-ci.txt
 python scripts/test_kfp_local.py
 ~~~
+
+Sirf pipeline compile karne ke liye `examples/kfp/requirements.txt` enough hai.
 
 Local runner KFP component/artifact behavior verify karta hai, lekin caching/retry production semantics, authentication, remote artifact-store configuration aur a real KFP backend ko test nahi karta.
 

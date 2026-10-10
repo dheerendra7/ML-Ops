@@ -44,7 +44,7 @@ jobs:
           python-version: "3.12"
 
       - name: Install pinned KFP SDK
-        run: python -m pip install --disable-pip-version-check -r examples/kfp/requirements.txt
+        run: python -m pip install --disable-pip-version-check -r examples/kfp/requirements-ci.txt
 
       - name: Compile pipeline and validate generated YAML
         run: |
