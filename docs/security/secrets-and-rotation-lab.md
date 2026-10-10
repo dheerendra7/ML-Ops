@@ -38,7 +38,7 @@ printf '%s' 'lab-only-not-a-real-credential' > "$SECRET_FILE"
 
 kubectl create secret generic demo-api-credential \
   --namespace mlops-secrets-lab \
-  --from-file=api-key="$SECRET_FILE"
+  --from-file=api_key="$SECRET_FILE"
 
 rm -f "$SECRET_FILE"
 unset SECRET_FILE
@@ -50,7 +50,7 @@ Verify only object metadata and keys, not the encoded value:
 
 ~~~bash
 kubectl describe secret demo-api-credential -n mlops-secrets-lab
-kubectl get secret demo-api-credential -n mlops-secrets-lab -o jsonpath='{.data.api-key}' > /dev/null
+kubectl get secret demo-api-credential -n mlops-secrets-lab -o jsonpath='{.data.api_key}' > /dev/null
 ~~~
 
 Do not print the value from the JSONPath command. Kubernetes Secret data is base64-encoded in API representations; base64 is **not encryption**.
@@ -79,7 +79,7 @@ printf '%s' 'lab-only-rotated-not-a-real-credential' > "$NEXT_SECRET_FILE"
 
 kubectl create secret generic demo-api-credential \
   --namespace mlops-secrets-lab \
-  --from-file=api-key="$NEXT_SECRET_FILE" \
+  --from-file=api_key="$NEXT_SECRET_FILE" \
   --dry-run=client -o yaml |
   kubectl apply -f -
 
@@ -87,7 +87,7 @@ rm -f "$NEXT_SECRET_FILE"
 unset NEXT_SECRET_FILE
 
 kubectl describe secret demo-api-credential -n mlops-secrets-lab
-kubectl get secret demo-api-credential -n mlops-secrets-lab -o jsonpath='{.data.api-key}' > /dev/null
+kubectl get secret demo-api-credential -n mlops-secrets-lab -o jsonpath='{.data.api_key}' > /dev/null
 ~~~
 
 The same Secret object's data has been updated. This exercise does not demonstrate integration with an upstream vault or prove an application has refreshed its credentials.
