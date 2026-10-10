@@ -65,18 +65,18 @@ The lab's ResourceQuota intentionally has a small CPU request budget: 500 millic
 
 ## 4. Prove the aggregate quota is enforced
 
-Create two small Pods. Each requests 250 millicores of CPU, so together they use the full 500m request budget.
+Create two small Pods. Each requests 250 millicores of CPU, so together they use the full 500m request budget. The current kubectl run command uses the documented --overrides option to set container resources.
 
 ~~~bash
-kubectl run quota-probe-1 --image=registry.k8s.io/pause:3.10 --restart=Never -n mlops-lab --requests='cpu=250m,memory=128Mi' --limits='cpu=500m,memory=256Mi'
-kubectl run quota-probe-2 --image=registry.k8s.io/pause:3.10 --restart=Never -n mlops-lab --requests='cpu=250m,memory=128Mi' --limits='cpu=500m,memory=256Mi'
+kubectl run quota-probe-1 --image=registry.k8s.io/pause:3.10 --restart=Never -n mlops-lab --overrides='{"apiVersion":"v1","spec":{"containers":[{"name":"quota-probe-1","image":"registry.k8s.io/pause:3.10","resources":{"requests":{"cpu":"250m","memory":"128Mi"},"limits":{"cpu":"500m","memory":"256Mi"}}}]}}'
+kubectl run quota-probe-2 --image=registry.k8s.io/pause:3.10 --restart=Never -n mlops-lab --overrides='{"apiVersion":"v1","spec":{"containers":[{"name":"quota-probe-2","image":"registry.k8s.io/pause:3.10","resources":{"requests":{"cpu":"250m","memory":"128Mi"},"limits":{"cpu":"500m","memory":"256Mi"}}}]}}'
 kubectl describe resourcequota team-resource-budget -n mlops-lab
 ~~~
 
 Now attempt a third Pod with the same request:
 
 ~~~bash
-kubectl run quota-probe-3 --image=registry.k8s.io/pause:3.10 --restart=Never -n mlops-lab --requests='cpu=250m,memory=128Mi' --limits='cpu=500m,memory=256Mi'
+kubectl run quota-probe-3 --image=registry.k8s.io/pause:3.10 --restart=Never -n mlops-lab --overrides='{"apiVersion":"v1","spec":{"containers":[{"name":"quota-probe-3","image":"registry.k8s.io/pause:3.10","resources":{"requests":{"cpu":"250m","memory":"128Mi"},"limits":{"cpu":"500m","memory":"256Mi"}}}]}}'
 ~~~
 
 **Expected result:** the third Pod creation is rejected because the total CPU requests would exceed the namespace's quota. The exact error wording varies by Kubernetes version. If it is accepted, stop and inspect the manifest, namespace, and quota usage rather than assuming the test passed.
