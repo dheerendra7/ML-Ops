@@ -47,6 +47,7 @@ Start with [`docs/LEARNING-PATH.md`](docs/LEARNING-PATH.md), then use the topic 
 - [Lab 01 — Kubernetes resource governance](docs/labs/resource-governance.md) walks through ResourceQuota, LimitRange, server-side dry run, expected quota rejection, troubleshooting, and cleanup.
 - [Lab 02 — Least-privilege RBAC](docs/security/least-privilege-rbac-lab.md) checks allowed and denied ServiceAccount actions in a disposable namespace.
 - [Lab 03 — Secrets and rotation](docs/security/secrets-and-rotation-lab.md) uses only dummy credentials and explains external-manager prerequisites.
+- [Lab validation matrix](docs/testing/lab-validation-matrix.md) separates actual CI evidence from untested Kubeflow/GPU/provider scenarios.
 - The [run-record YAML](examples/lineage/run-record.example.yaml) and [GPU Job YAML](examples/cost/gpu-job.example.yaml) are educational templates; their placeholders require review before use.
 - CI also compiles the synthetic KFP example and builds/runs the container smoke test.
 - GitHub Actions checks relative Markdown links, fenced code-block closure, YAML syntax, Python source syntax, KFP pipeline compilation, and the container image smoke test on pushes and pull requests.
