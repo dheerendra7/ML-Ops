@@ -15,49 +15,25 @@ if str(SCRIPTS) not in sys.path:
 
 from test_kfp_backend import (  # noqa: E402
     normalise_state,
+    verify_artifact_wiring,
     verify_rejected_run,
     verify_successful_run,
 )
 
 
-def task(
-    name: str,
-    state: str,
-    *,
-    inputs: dict[str, Any] | None = None,
-    outputs: dict[str, Any] | None = None,
-) -> dict[str, Any]:
-    return {
-        "display_name": name,
-        "state": state,
-        "inputs": inputs or {},
-        "outputs": outputs or {},
-    }
+def task(name: str, state: str) -> dict[str, Any]:
+    return {"display_name": name, "state": state}
 
 
 def valid_run(gate_state: str = "SUCCEEDED") -> dict[str, Any]:
     return {
         "run_details": {
             "task_details": [
-                task(
-                    "create-toy-dataset",
-                    "SUCCEEDED",
-                    outputs={"dataset": {"artifact_ids": ["dataset-artifact-id"]}},
-                ),
-                task(
-                    "train-toy-model",
-                    "SUCCEEDED",
-                    inputs={"dataset": {"artifact_ids": ["dataset-artifact-id"]}},
-                    outputs={"model": {"artifact_ids": ["model-artifact-id"]}},
-                ),
-                task(
-                    "evaluate-toy-model",
-                    "SUCCEEDED",
-                    inputs={"model": {"artifact_ids": ["model-artifact-id"]}},
-                ),
+                task("create-toy-dataset", "SUCCEEDED"),
+                task("train-toy-model", "SUCCEEDED"),
+                task("evaluate-toy-model", "SUCCEEDED"),
                 task("enforce-quality-gate", gate_state),
-                # KFP can return repeated internal implementation nodes with
-                # the same display name. They must not be mistaken for pipeline steps.
+                # Internal KFP implementation nodes can reuse display names.
                 task("executor", "SUCCEEDED"),
                 task("executor", "SUCCEEDED"),
             ]
@@ -65,8 +41,45 @@ def valid_run(gate_state: str = "SUCCEEDED") -> dict[str, Any]:
     }
 
 
+def valid_pipeline_spec() -> dict[str, Any]:
+    return {
+        "root": {
+            "dag": {
+                "tasks": {
+                    "create-toy-dataset": {},
+                    "train-toy-model": {
+                        "inputs": {
+                            "artifacts": {
+                                "dataset": {
+                                    "taskOutputArtifact": {
+                                        "producerTask": "create-toy-dataset",
+                                        "outputArtifactKey": "dataset",
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "evaluate-toy-model": {
+                        "inputs": {
+                            "artifacts": {
+                                "model": {
+                                    "taskOutputArtifact": {
+                                        "producerTask": "train-toy-model",
+                                        "outputArtifactKey": "model",
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "enforce-quality-gate": {},
+                }
+            }
+        }
+    }
+
+
 class KfpBackendContractTests(unittest.TestCase):
-    def test_success_path_requires_tasks_and_artifact_references(self) -> None:
+    def test_success_path_requires_expected_pipeline_tasks(self) -> None:
         verify_successful_run(valid_run("SUCCEEDED"))
 
     def test_rejection_path_requires_gate_itself_to_fail(self) -> None:
@@ -78,19 +91,12 @@ class KfpBackendContractTests(unittest.TestCase):
         with self.assertRaisesRegex(AssertionError, "train-toy-model"):
             verify_rejected_run(run)
 
-    def test_missing_artifact_reference_is_rejected(self) -> None:
-        run = valid_run("SUCCEEDED")
-        run["run_details"]["task_details"][1]["outputs"]["model"]["artifact_ids"] = []
-        with self.assertRaisesRegex(AssertionError, "model"):
-            verify_successful_run(run)
+    def test_missing_task_details_fail_closed(self) -> None:
+        with self.assertRaisesRegex(AssertionError, "task_details"):
+            verify_successful_run({"run_details": {"task_details": []}})
 
-    def test_mismatched_artifact_ids_are_rejected(self) -> None:
-        run = valid_run("SUCCEEDED")
-        run["run_details"]["task_details"][1]["inputs"]["dataset"]["artifact_ids"] = [
-            "different-dataset-artifact-id"
-        ]
-        with self.assertRaisesRegex(AssertionError, "Artifact hand-off mismatch"):
-            verify_successful_run(run)
+    def test_internal_executor_duplicates_do_not_look_like_pipeline_duplicates(self) -> None:
+        verify_successful_run(valid_run("SUCCEEDED"))
 
     def test_duplicate_expected_pipeline_task_is_rejected(self) -> None:
         run = valid_run("SUCCEEDED")
@@ -100,13 +106,32 @@ class KfpBackendContractTests(unittest.TestCase):
         with self.assertRaisesRegex(AssertionError, "duplicate pipeline task"):
             verify_successful_run(run)
 
-    def test_missing_task_details_fail_closed(self) -> None:
-        with self.assertRaisesRegex(AssertionError, "task_details"):
-            verify_successful_run({"run_details": {"task_details": []}})
-
     def test_runtime_state_prefix_is_normalised(self) -> None:
         self.assertEqual(normalise_state("RUNTIME_STATE_SUCCEEDED"), "succeeded")
         self.assertEqual(normalise_state("FAILED"), "failed")
+
+    def test_compiled_artifact_wiring_is_accepted(self) -> None:
+        verify_artifact_wiring(valid_pipeline_spec())
+
+    def test_wrong_dataset_producer_is_rejected(self) -> None:
+        spec = valid_pipeline_spec()
+        binding = spec["root"]["dag"]["tasks"]["train-toy-model"]["inputs"]["artifacts"]["dataset"]["taskOutputArtifact"]
+        binding["producerTask"] = "some-other-task"
+        with self.assertRaisesRegex(AssertionError, "train-toy-model.dataset"):
+            verify_artifact_wiring(spec)
+
+    def test_wrong_model_output_key_is_rejected(self) -> None:
+        spec = valid_pipeline_spec()
+        binding = spec["root"]["dag"]["tasks"]["evaluate-toy-model"]["inputs"]["artifacts"]["model"]["taskOutputArtifact"]
+        binding["outputArtifactKey"] = "wrong-output"
+        with self.assertRaisesRegex(AssertionError, "evaluate-toy-model.model"):
+            verify_artifact_wiring(spec)
+
+    def test_missing_artifact_binding_is_rejected(self) -> None:
+        spec = valid_pipeline_spec()
+        del spec["root"]["dag"]["tasks"]["evaluate-toy-model"]["inputs"]["artifacts"]["model"]
+        with self.assertRaisesRegex(AssertionError, "evaluate-toy-model.model"):
+            verify_artifact_wiring(spec)
 
 
 if __name__ == "__main__":
