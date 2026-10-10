@@ -41,6 +41,8 @@ Prefer official documentation. Verify the version selector and installed release
 - Prometheus instrumentation guidance: https://prometheus.io/docs/practices/instrumentation/
 - Prometheus alerting guidance: https://prometheus.io/docs/practices/alerting/
 - KFP releases and SDK version notes: https://github.com/kubeflow/pipelines/releases
+- Kind quick start for disposable Kubernetes clusters: https://kind.sigs.k8s.io/docs/user/quick-start/
+- Kind GitHub Action releases: https://github.com/helm/kind-action/releases
 - Profiles: https://www.kubeflow.org/docs/components/central-dash/profiles/
 
 Link the exact official page near the claim it supports. For version-sensitive behavior, include the release context. Confirm important community-sourced tips with official docs or a reproducible test.
