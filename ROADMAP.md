@@ -12,7 +12,7 @@ This roadmap describes learning-content priorities, not promised release dates.
 - [x] Interview revision cards and glossary
 
 ## Next content milestones
-- [ ] Kubernetes workload basics: Pod, Job, Deployment, Service, ConfigMap, Secret
+- [x] Kubernetes workload basics: Pod, Job, Deployment, Service, ConfigMap, Secret
 - [ ] Container image build, scanning, and digest pinning
 - [ ] KFP lifecycle, artifacts, caching, retries, and parameters
 - [ ] Model evaluation gates and promotion strategies
@@ -27,6 +27,7 @@ This roadmap describes learning-content priorities, not promised release dates.
 - [x] Expand the core Kubernetes resource, Kubeflow architecture, KFP components, Profile/isolation, debugging, and production-readiness guides into beginner-friendly Hinglish.
 - [x] Add a GitHub Actions workflow for local Markdown links, fenced-block closure, and YAML syntax checks.
 - [x] Add a guided ResourceQuota and LimitRange lab with preflight checks, expected outcomes, troubleshooting, and cleanup.
+- [x] Add a lightweight Kubernetes Job manifest and explain workload/configuration object choices.
 - [ ] Run the lab on explicitly documented Kubernetes versions and record results; this has **not** been completed by the static CI checks.
 
 ## Quality bar
