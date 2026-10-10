@@ -133,6 +133,9 @@ def main() -> int:
     check('path "secret/data/mlops-app" { capabilities = ["read"] }' in vault_lab_script, "Vault smoke lab must use a path-scoped read-only policy")
     check("set -Eeuo pipefail" in vault_lab_script and "wait_for_synced_value" in vault_lab_script, "Vault smoke lab must fail closed and verify sync/rotation")
     check("set -x" not in vault_lab_script, "Vault smoke lab must not enable shell xtrace while handling tokens")
+    check("wait_for_mounted_value" in vault_lab_script, "Vault smoke lab must verify the consumer's mounted Secret file")
+    check("ghcr.io/containerd/busybox:1.36@sha256:" in vault_lab_script, "Vault consumer smoke image must be pinned by digest")
+    check('runAsNonRoot: true' in vault_lab_script and "readOnlyRootFilesystem: true" in vault_lab_script, "Vault consumer Pod must run non-root with a read-only root filesystem")
     print(f"Example regression checks: {CHECKS} assertions, {len(FAILURES)} failure(s).")
     if FAILURES:
         for failure in FAILURES:

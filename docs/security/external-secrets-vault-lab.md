@@ -77,9 +77,10 @@ The script pins chart versions and performs these checks:
 4. Install ESO and wait for its CRDs.
 5. Apply [the SecretStore example](../../examples/security/external-secrets/vault-secret-store.example.yaml) and [the ExternalSecret example](../../examples/security/external-secrets/vault-external-secret.example.yaml).
 6. Wait for the generated Kubernetes Secret and compare its value in memory with the expected dummy value. The value is not printed.
-7. Rotate the fake value in Vault and wait for ESO to reconcile the Kubernetes Secret. The script again checks the value without printing it.
+7. Start a non-root BusyBox consumer Pod with a read-only Secret-volume mount and verify its mounted file contains the initial value.
+8. Rotate the fake value in Vault and wait for ESO to reconcile the Kubernetes Secret and the projected Secret volume. The script checks both values in memory without printing either.
 
-A successful run ends with three PASS messages for scoped access, initial sync, and rotation. It deliberately exits non-zero if the operator reports an error, the wrong Vault policy is effective, a Secret does not synchronize, or rotation does not arrive within the bounded retry window.
+A successful run ends with PASS messages for scoped access, initial Kubernetes Secret sync, consumer Pod read, Secret rotation, and mounted-file rotation. The consumer runs non-root with a read-only filesystem and mount. It deliberately exits non-zero if the operator reports an error, the wrong Vault policy is effective, the consumer cannot read the initial file, the Secret does not synchronize, or rotation does not arrive within the bounded retry window. Kubernetes updates projected Secret-volume files asynchronously; an application must reopen/reload the file to observe the new bytes.
 
 ## Inspect status safely
 
@@ -124,5 +125,6 @@ This lab proves only the tested local Vault KV v2 → ESO → Kubernetes Secret 
 
 - [External Secrets Operator — HashiCorp Vault provider](https://external-secrets.io/main/provider/hashicorp-vault/)
 - [External Secrets Operator — installation](https://external-secrets.io/main/introduction/getting-started/)
+- [Kubernetes Secret volume updates](https://kubernetes.io/docs/concepts/configuration/secret/#using-secrets-as-files-from-a-pod)
 - [HashiCorp Vault — dev server safety](https://developer.hashicorp.com/vault/docs/concepts/dev-server)
 - [HashiCorp Vault Helm chart — deployment modes](https://developer.hashicorp.com/vault/docs/deploy/kubernetes/helm/run)

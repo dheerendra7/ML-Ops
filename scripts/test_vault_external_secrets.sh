@@ -14,6 +14,7 @@ INITIAL_PASSWORD="lab-only-not-a-real-password"
 ROTATED_PASSWORD="lab-only-rotated-not-a-real-password"
 TARGET_SECRET_NAME="mlops-app-consumer"
 EXTERNAL_SECRET_NAME="mlops-app-password"
+CONSUMER_POD_NAME="mlops-vault-secret-consumer"
 
 on_error() {
   local status="$?"
@@ -51,6 +52,22 @@ wait_for_synced_value() {
     sleep 2
   done
   echo "ERROR: expected ExternalSecret value was not synchronized within the timeout; value not printed." >&2
+  return 1
+}
+
+wait_for_mounted_value() {
+  local expected="$1"
+  local attempt
+  local actual
+  for attempt in $(seq 1 60); do
+    if actual="$(kubectl exec "$CONSUMER_POD_NAME" -n "$APP_NAMESPACE" -- \
+      cat /var/run/mlops-secrets/password 2>/dev/null)" && [[ "$actual" == "$expected" ]]; then
+      return 0
+    fi
+    # Kubelet updates projected Secret volumes asynchronously; never echo the value.
+    sleep 2
+  done
+  echo "ERROR: mounted Secret file did not reach the expected test value; value not printed." >&2
   return 1
 }
 
@@ -112,11 +129,54 @@ kubectl wait --for=condition=Ready "externalsecret/$EXTERNAL_SECRET_NAME" \
 wait_for_synced_value "$INITIAL_PASSWORD"
 echo "PASS: ExternalSecret created the target Kubernetes Secret without printing its contents."
 
-echo "Rotating the synthetic Vault value and checking controller reconciliation..."
+echo "Starting a restricted consumer Pod that mounts the generated Secret as a read-only file..."
+kubectl apply -f - <<'YAML'
+apiVersion: v1
+kind: Pod
+metadata:
+  name: mlops-vault-secret-consumer
+  namespace: mlops-vault-lab
+spec:
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 65532
+    runAsGroup: 65532
+    fsGroup: 65532
+  containers:
+    - name: consumer
+      image: ghcr.io/containerd/busybox:1.36@sha256:907ca53d7e2947e849b839b1cd258c98fd3916c60f2e6e70c30edbf741ab6754
+      command: ["sh", "-c", "while true; do sleep 5; done"]
+      securityContext:
+        allowPrivilegeEscalation: false
+        readOnlyRootFilesystem: true
+        capabilities:
+          drop: ["ALL"]
+      volumeMounts:
+        - name: app-secret
+          mountPath: /var/run/mlops-secrets
+          readOnly: true
+  volumes:
+    - name: app-secret
+      secret:
+        secretName: mlops-app-consumer
+        defaultMode: 0440
+        items:
+          - key: password
+            path: password
+  restartPolicy: Always
+YAML
+kubectl wait --for=condition=Ready "pod/$CONSUMER_POD_NAME" \
+  --namespace "$APP_NAMESPACE" --timeout=120s
+wait_for_mounted_value "$INITIAL_PASSWORD"
+echo "PASS: a non-root consumer Pod can read the initial Secret through a read-only mount."
+
+echo "Rotating the synthetic Vault value and checking controller and mounted-volume reconciliation..."
 vault_cli "$VAULT_ROOT_TOKEN" kv put secret/mlops-app \
   username=lab-demo-user password="$ROTATED_PASSWORD"
 wait_for_synced_value "$ROTATED_PASSWORD"
 echo "PASS: the generated Kubernetes Secret reconciled to the rotated Vault value."
+wait_for_mounted_value "$ROTATED_PASSWORD"
+echo "PASS: the non-root consumer's mounted Secret file reflects the rotation without printing it."
 
 unset VAULT_ROOT_TOKEN VAULT_READ_TOKEN INITIAL_PASSWORD ROTATED_PASSWORD
-echo "PASS: Vault + External Secrets integration, least-privilege read policy, and rotation smoke test completed."
+echo "PASS: Vault + ESO, scoped read policy, Kubernetes Secret sync, mounted consumer read, and mounted-file rotation completed."
