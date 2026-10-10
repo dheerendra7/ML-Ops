@@ -15,8 +15,8 @@ Read [KFP component types](kubeflow/kfp-component-types.md), then [KFP run lifec
 **You should be able to:** choose a component type, explain artifact hand-off, judge when caching/retries are safe, and explain how a quality gate blocks promotion.
 
 ## Stage 4 — Multi-user and resource isolation
-Read [Profiles and namespaces](kubeflow/profiles-namespaces-isolation.md), then complete [Lab 01 — resource governance](labs/resource-governance.md) and [Lab 02 — least-privilege RBAC](security/least-privilege-rbac-lab.md) and [Lab 03 — secrets and rotation](security/secrets-and-rotation-lab.md) in a disposable cluster.
-**You should be able to:** distinguish aggregate quota, per-object constraints, RBAC, and workload identity.
+Read [Profiles and namespaces](kubeflow/profiles-namespaces-isolation.md), then complete [Lab 01 — resource governance](labs/resource-governance.md), [Lab 02 — least-privilege RBAC](security/least-privilege-rbac-lab.md), and [Lab 03 — secrets and rotation](security/secrets-and-rotation-lab.md) in a disposable cluster. Then run [Lab 04 — Vault + External Secrets Operator](security/external-secrets-vault-lab.md) to practice provider-backed sync, scoped read permissions, and rotation using synthetic data only.
+**You should be able to:** distinguish aggregate quota, per-object constraints, RBAC, workload identity, and the difference between a provider-side secret source and a Kubernetes Secret synchronized for a workload.
 
 ## Stage 5 — Operate and debug
 Use the [debugging checklist](troubleshooting/debugging-checklist.md), [production-readiness checklist](production/readiness-checklist.md), [model evaluation/promotion guide](production/model-evaluation-and-promotion.md), and [observability guide](production/observability-for-ml-pipelines.md). Review the [container image security guide](containers/image-security-and-reproducibility.md), [reproducibility/lineage guide](production/reproducibility-and-lineage.md), and [cost/GPU scheduling guide](production/cost-controls-and-gpu-scheduling.md) before publishing runtimes. Start with evidence, not random changes.

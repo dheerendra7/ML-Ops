@@ -47,4 +47,12 @@ Prefer official documentation. Verify the version selector and installed release
 - Kind GitHub Action releases: https://github.com/helm/kind-action/releases
 - Profiles: https://www.kubeflow.org/docs/components/central-dash/profiles/
 
+## External Secrets and Vault
+- External Secrets Operator installation: https://external-secrets.io/main/introduction/getting-started/
+- External Secrets Operator HashiCorp Vault provider: https://external-secrets.io/main/provider/hashicorp-vault/
+- External Secrets Operator release history: https://github.com/external-secrets/external-secrets/releases
+- HashiCorp Vault dev-server security warning: https://developer.hashicorp.com/vault/docs/concepts/dev-server
+- HashiCorp Vault on Kubernetes with Helm: https://developer.hashicorp.com/vault/docs/deploy/kubernetes/helm/run
+- HashiCorp Vault Helm chart releases: https://github.com/hashicorp/vault-helm/releases
+
 Link the exact official page near the claim it supports. For version-sensitive behavior, include the release context. Confirm important community-sourced tips with official docs or a reproducible test.

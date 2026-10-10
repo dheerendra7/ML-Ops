@@ -18,7 +18,7 @@ This roadmap describes learning-content priorities, not promised release dates.
 - [x] Model evaluation gates and promotion strategies guide, linked to the synthetic KFP gate example
 - [x] Namespace-scoped least-privilege RBAC verification lab
 - [x] Kubernetes Secret handling and safe rotation lab (synthetic values only)
-- [ ] Provider-specific external secret manager integration lab (requires a chosen provider and matching test environment)
+- [ ] Verify the provider-specific HashiCorp Vault + External Secrets Operator lab using the pinned disposable-cluster workflow before counting it as tested.
 - [x] Observability: logs, metrics, traces, alerts, and ML/data pipeline signals guide
 - [x] Reproducibility, lineage, and experiment tracking guide plus illustrative run-record template
 - [x] Cost controls and GPU scheduling guide plus explicitly non-runnable GPU Job template
@@ -46,7 +46,7 @@ This roadmap describes learning-content priorities, not promised release dates.
 - [x] Add semantic regression assertions for RBAC, GPU, lineage, resource-policy, and container examples.
 - [x] Add live disposable-Kubernetes integration checks for ResourceQuota, LimitRange defaults, Job completion, RBAC allow/deny, and synthetic Secret rotation on two pinned Kubernetes versions.
 - [x] Verify the standalone KFP backend integration smoke test (remote run submission, artifact hand-off and expected quality-gate rejection) on KFP 2.17.0 + Kind v1.34.3; see [workflow run #5](https://github.com/dheerendra7/ML-Ops/actions/runs/38067527101) and the [backend smoke test guide](docs/testing/standalone-kfp-backend-smoke.md). Rerun this test when its workflow, script, or pipeline example changes.
-- [ ] Validate a full Kubeflow/community distribution, GPU hardware execution, and provider-specific secret integrations; the current CI does not cover these.
+- [ ] Validate a full Kubeflow/community distribution, GPU hardware execution, production Vault Kubernetes authentication/TLS, and additional cloud secret-provider integrations; the current CI does not cover these.
 
 ## Quality bar
 Each guide should explain assumptions, link official sources, label risky commands, distinguish version-dependent behavior, and include verification steps. YAML should be syntax-checked and tested against a target cluster before being described as tested.

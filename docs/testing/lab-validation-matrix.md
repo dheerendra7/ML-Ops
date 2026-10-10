@@ -14,6 +14,7 @@ This page distinguishes static checks from runtime tests. A check is considered 
 | KFP compile job | Sample pipeline compiles with KFP SDK 2.17.0 and generated package is parseable YAML | Submission to, or execution on, a live KFP backend |
 | KFP local runtime regression | DockerRunner executes the synthetic artifact-to-gate pipeline; passing output is checked, an intentionally rejected candidate fails at the gate task, and 13 score/threshold boundary checks run | Remote KFP auth/API, production artifact store, backend caching/retry behavior, real training or production model quality |
 | Standalone KFP backend smoke workflow | A disposable Kind/KFP 2.17.0 cluster runs positive and negative remote cases; the compiled package's Dataset/Model bindings are asserted, consumer tasks parse/validate their input artifacts, and the negative run must fail specifically at the quality gate | The historical baseline [run #5](https://github.com/dheerendra7/ML-Ops/actions/runs/38067527101) passed before task-level assertions. The latest revised implementation must be considered verified only after its current [workflow run](https://github.com/dheerendra7/ML-Ops/actions/workflows/kfp-backend-smoke.yml) completes successfully |
+| Vault + External Secrets Operator integration | A disposable Kind v1.34.3 cluster installs pinned Vault/ESO Helm charts, checks a scoped Vault read token, syncs KV v2 data to a Kubernetes Secret without printing the value, and verifies rotation | The new [Vault/ESO workflow](../../.github/workflows/vault-external-secrets-smoke.yml) must complete successfully; dev-mode Vault and a static lab token are for testing only and do not prove production identity/TLS, durability, or cloud-provider integration |
 
 Verified baseline: [GitHub Actions run #108](https://github.com/dheerendra7/ML-Ops/actions/runs/38067726046) completed successfully for commit `91ffb91a34b93c1c804c74e2897f62cd9e91cc9d`; all five jobs passed, including KFP compilation, container smoke testing, and Kubernetes lab integration on v1.34.3 and v1.35.0. The standalone backend smoke test separately passed on commit `cc49c5be7d50aaf2392a679f4d3febcace8734da` in [workflow run #5](https://github.com/dheerendra7/ML-Ops/actions/runs/38067527101), with both expected remote run outcomes confirmed in its logs. For later commits, open [the latest GitHub Actions runs](https://github.com/dheerendra7/ML-Ops/actions) and verify the exact commit and each required job.
 
@@ -43,7 +44,7 @@ The test harness deletes the dedicated namespaces when it exits. These clusters 
 
 - A full Kubeflow installation and multi-user Profile controller behavior.
 - The revised remote KFP smoke test is not verified until the current workflow completes successfully. For KFP 2.17.0, task-detail API conversion does not reliably populate runtime artifact-ID fields for Argo-executed tasks; this smoke test instead checks compiled producer/consumer bindings and successful consumer reads. Configured production artifact-store durability, a full Kubeflow/community distribution, and other backend configurations remain unverified. The local DockerRunner regression test and the standalone smoke test have different scopes.
-- Provider-specific external secret manager/CSI integration, identity federation, upstream credential revocation or rotation.
+- Production Vault Kubernetes authentication/TLS, identity federation, upstream credential revocation, and additional external-secret providers remain unverified. The local Vault/ESO workflow uses dev mode and does not certify production configuration.
 - GPU execution. The GPU manifest is a deliberately non-runnable template until an approved GPU-enabled image/digest and compatible GPU hardware/plugin are selected.
 - Production cluster sizing, network policies, cloud IAM, persistence, cost controls and organizational policies.
 - A full integration matrix across multiple supported Kubeflow releases and KFP backend configurations.
@@ -52,7 +53,7 @@ A successful Kind run is runtime evidence for the scenarios and Kubernetes versi
 
 ## Re-running locally
 
-Use a disposable local Kubernetes cluster compatible with Kind and review [Lab 01](../labs/resource-governance.md), [Lab 02](../security/least-privilege-rbac-lab.md), and [Lab 03](../security/secrets-and-rotation-lab.md) first. The automated harness is [scripts/test_kind_labs.sh](../../scripts/test_kind_labs.sh). Do not run its namespace-deletion steps against a cluster with resources you need.
+Use a disposable local Kubernetes cluster compatible with Kind and review [Lab 01](../labs/resource-governance.md), [Lab 02](../security/least-privilege-rbac-lab.md), [Lab 03](../security/secrets-and-rotation-lab.md), and [Lab 04 — Vault/ESO](../security/external-secrets-vault-lab.md) first. The automated harness is [scripts/test_kind_labs.sh](../../scripts/test_kind_labs.sh). Do not run its namespace-deletion steps against a cluster with resources you need.
 
 ## Contribution rule for new lab coverage
 

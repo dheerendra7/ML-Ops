@@ -36,6 +36,7 @@ Start with [`docs/LEARNING-PATH.md`](docs/LEARNING-PATH.md), then use the topic 
 - [Reproducibility, experiment tracking, and lineage](docs/production/reproducibility-and-lineage.md)
 - [Cost controls and GPU scheduling](docs/production/cost-controls-and-gpu-scheduling.md)
 - [Standalone KFP backend smoke test](docs/testing/standalone-kfp-backend-smoke.md)
+- [External secrets with HashiCorp Vault](docs/security/external-secrets-vault-lab.md)
 - [Troubleshooting checklist](docs/troubleshooting/debugging-checklist.md)
 - [Production-readiness checklist](docs/production/readiness-checklist.md)
 - [Interview revision cards](docs/interview/revision-cards.md)
@@ -48,9 +49,10 @@ Start with [`docs/LEARNING-PATH.md`](docs/LEARNING-PATH.md), then use the topic 
 - [Lab 01 — Kubernetes resource governance](docs/labs/resource-governance.md) walks through ResourceQuota, LimitRange, server-side dry run, expected quota rejection, troubleshooting, and cleanup.
 - [Lab 02 — Least-privilege RBAC](docs/security/least-privilege-rbac-lab.md) checks allowed and denied ServiceAccount actions in a disposable namespace.
 - [Lab 03 — Secrets and rotation](docs/security/secrets-and-rotation-lab.md) uses only dummy credentials and explains external-manager prerequisites.
+- [Lab 04 — Vault + External Secrets Operator](docs/security/external-secrets-vault-lab.md) syncs a synthetic Vault KV v2 value through a path-scoped token, verifies read denial outside that path, and tests rotation without printing secret contents. It is explicitly a disposable dev-mode lab, not a production Vault recipe.
 - [Lab validation matrix](docs/testing/lab-validation-matrix.md) separates actual CI evidence from untested Kubeflow/GPU/provider scenarios.
 - The [run-record YAML](examples/lineage/run-record.example.yaml) and [GPU Job YAML](examples/cost/gpu-job.example.yaml) are educational templates; their placeholders require review before use.
-- GitHub Actions validates relative Markdown links, code fences, YAML/Python syntax, security-sensitive example invariants, KFP compilation and local runtime, the container smoke test, and core Kubernetes labs on Kind v1.34.3 and v1.35.0.
+- GitHub Actions validates relative Markdown links, code fences, YAML/Python syntax, security-sensitive example invariants, KFP compilation and local runtime, the container smoke test, and core Kubernetes labs on Kind v1.34.3 and v1.35.0. A separate pinned-chart Vault/ESO workflow tests sync and rotation in a disposable Kind cluster; count that integration as verified only after its latest run completes successfully.
 - The KFP local test checks a successful artifact-to-gate run, an intentionally rejected candidate, and 13 score/threshold boundary cases. The Kind tests cover ResourceQuota, LimitRange defaults, a sample Job, RBAC allow/deny, and synthetic Secret rotation.
 - The standalone KFP backend smoke workflow submits success/rejection runs to a disposable KFP 2.17.0 backend, validates compiled Dataset/Model bindings, and checks task-level outcomes plus consumer-side artifact parsing; its current revision must pass CI before that stricter coverage is treated as verified. See the [validation matrix](docs/testing/lab-validation-matrix.md) for exact evidence and limitations. These checks still do **not** prove a full Kubeflow installation, production artifact-store durability, GPU execution, or a provider-specific secret-manager integration.
 
