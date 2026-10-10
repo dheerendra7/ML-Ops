@@ -1,0 +1,51 @@
+# Teaching template only; this is not a native KFP or Kubernetes resource.
+# Replace placeholders with real, authorized references before adopting the schema.
+apiVersion: mlops-handbook.example/v1
+kind: RunRecord
+metadata:
+  name: example-training-run
+  purpose: "Illustrative provenance and lineage record; not an installed API"
+run:
+  id: "REPLACE_WITH_RUN_ID"
+  started_at: "REPLACE_WITH_RFC3339_TIMESTAMP"
+  status: "completed"
+source:
+  repository: "https://github.com/OWNER/REPOSITORY"
+  commit: "REPLACE_WITH_SOURCE_COMMIT_SHA"
+  pipeline_definition_version: "REPLACE_WITH_PIPELINE_VERSION"
+runtime:
+  kfp_sdk_version: "REPLACE_WITH_KFP_SDK_VERSION"
+  kubernetes_version: "REPLACE_WITH_CLUSTER_VERSION"
+  component_image: "registry.example.invalid/team/trainer@sha256:REPLACE_WITH_REVIEWED_DIGEST"
+  dependency_lockfile: "REPLACE_WITH_LOCKFILE_PATH_OR_URI"
+  dependency_lock_digest: "sha256:REPLACE_WITH_COMPUTED_DIGEST"
+inputs:
+  dataset:
+    uri: "REPLACE_WITH_VERSIONED_DATASET_URI"
+    version: "REPLACE_WITH_IMMUTABLE_DATASET_VERSION"
+    content_digest: "sha256:REPLACE_WITH_COMPUTED_DIGEST"
+  preprocessing:
+    source_version: "REPLACE_WITH_PREPROCESSING_COMMIT_OR_VERSION"
+parameters:
+  random_seed: 42
+  training_config_version: "REPLACE_WITH_CONFIG_VERSION"
+outputs:
+  model:
+    uri: "REPLACE_WITH_MODEL_ARTIFACT_URI"
+    version: "REPLACE_WITH_IMMUTABLE_MODEL_VERSION"
+    content_digest: "sha256:REPLACE_WITH_COMPUTED_DIGEST"
+  evaluation_report:
+    uri: "REPLACE_WITH_EVALUATION_REPORT_URI"
+    content_digest: "sha256:REPLACE_WITH_COMPUTED_DIGEST"
+evaluation:
+  dataset_version: "REPLACE_WITH_EVALUATION_DATASET_VERSION"
+  policy_version: "REPLACE_WITH_APPROVED_POLICY_VERSION"
+  metrics:
+    example_metric: null
+  gate_decision: "not-evaluated"
+  approval_reference: null
+governance:
+  owner: "REPLACE_WITH_TEAM_OR_OWNER"
+  known_limitations:
+    - "This is an illustrative teaching record."
+  sensitive_data_embedded: false
