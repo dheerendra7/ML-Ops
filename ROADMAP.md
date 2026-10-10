@@ -24,7 +24,8 @@ This roadmap describes learning-content priorities, not promised release dates.
 
 ## Quality engineering progress
 
-- [x] Add a GitHub Actions workflow for local Markdown link, code-fence, and YAML syntax checks.
+- [x] Expand the core Kubernetes resource, Kubeflow architecture, KFP components, Profile/isolation, debugging, and production-readiness guides into beginner-friendly Hinglish.
+- [x] Add a GitHub Actions workflow for local Markdown links, fenced-block closure, and YAML syntax checks.
 - [x] Add a guided ResourceQuota and LimitRange lab with preflight checks, expected outcomes, troubleshooting, and cleanup.
 - [ ] Run the lab on explicitly documented Kubernetes versions and record results; this has **not** been completed by the static CI checks.
 
