@@ -13,12 +13,14 @@ The workflow at [kfp-backend-smoke.yml](../../.github/workflows/kfp-backend-smok
 
 | Run | Parameters | Expected evidence |
 |---|---|---|
-| handbook-backend-pass | offset=0.0, minimum_score=0.8 | Run `SUCCEEDED`; dataset, training, evaluation, and gate tasks succeed; Dataset/Model artifact IDs are present on producer outputs and consumer inputs |
-| handbook-backend-rejected-candidate | offset=1.0, minimum_score=0.8 | Run `FAILED`; the dataset, training, and evaluation tasks succeed; the quality-gate task itself is `FAILED`; artifact references are still present upstream |
+| handbook-backend-pass | offset=0.0, minimum_score=0.8 | Run `SUCCEEDED`; all four expected pipeline tasks succeed; the compiled package wires Dataset to training and Model to evaluation, and the consumer tasks successfully read and validate those artifact files |
+| handbook-backend-rejected-candidate | offset=1.0, minimum_score=0.8 | Run `FAILED`; dataset creation, training, and evaluation succeed; the quality-gate task itself is `FAILED` |
 
 The example pipeline uses synthetic rows and an illustrative score. It is not a real model-training benchmark or a production-quality metric. The failed candidate is a deliberate negative test.
 
-The runner waits for the KFP API before creating the experiment, compiles the package, and waits for each run's terminal state. It then fetches each full run detail and asserts task-level states plus non-empty Dataset/Model artifact IDs for producer outputs and consumer inputs. It also verifies that the IDs emitted by each producer exactly match the IDs recorded on its consumer's input, rather than merely checking that both sides are non-empty. KFP may include repeated internal runtime nodes (for example, `executor`), so the test filters for the four expected component names, ignores unrelated internal nodes, and fails if an expected pipeline task is missing or duplicated. The negative case fails closed unless all upstream tasks succeeded and the gate task itself failed. A successful installation step, API health check, or generic `FAILED` run alone is not enough.
+The runner waits for the KFP API before creating the experiment, compiles the package, and verifies the generated IR's artifact bindings before submission: the training task must consume the Dataset output from `create-toy-dataset`, and evaluation must consume the Model output from `train-toy-model`. Remote execution then checks the terminal run state and the state of each expected pipeline task. The Dataset consumer parses and validates the rows; the Model consumer validates the model type, training-row count, and finite prediction. Their successful task states therefore prove the component code could read and validate its declared input artifacts during that run.
+
+**Version-specific API limitation:** KFP 2.17.0's API conversion path has TODOs for populating runtime artifact inputs/outputs from Argo execution data in [`api_converter.go`](https://github.com/kubeflow/pipelines/blob/2.17.0/backend/src/apiserver/server/api_converter.go). The task-detail API can consequently omit artifact IDs for this execution path, even when components successfully consume the artifacts. The test deliberately validates compiled bindings plus actual consumer execution instead of treating absent API metadata IDs as proof of broken hand-off. It still fails if an expected task is missing or duplicated, if the compiled binding points to the wrong producer/output, or if the quality-gate test fails at the wrong task. A successful installation step, API health check, or generic `FAILED` run alone is not enough.
 
 ## Running the workflow
 
@@ -48,7 +50,8 @@ For the specific KFP version, Kubernetes node image, SDK pin and CI environment 
 - the standalone manifests can install and reach the configured Deployment readiness criteria;
 - the Python SDK can connect through the configured API endpoint;
 - a compiled synthetic pipeline package can be submitted as a remote run;
-- the backend schedules the sample tasks and exposes non-empty Dataset/Model artifact references on producer outputs and consumer inputs, with matching IDs proving the expected hand-off;
+- the compiled pipeline package connects Dataset/Model artifact inputs to the intended producer outputs;
+- remote training and evaluation tasks successfully open and validate their Dataset/Model artifact contents;
 - every expected task on a valid candidate completes successfully;
 - the intentionally below-threshold candidate fails specifically at the quality-gate task after its upstream tasks succeed.
 
@@ -66,7 +69,7 @@ It is still only a focused smoke test. It does not establish production availabi
 | Experiment/run submission | Inspect API response, namespace/context and backend logs without printing credentials |
 | Run waits but does not finish | Check workflow-controller/task Pods, image pulls, task logs, artifact store and admission/quota issues |
 | Negative run fails for an unrelated reason | The test checks task-level states, verifies that upstream tasks succeeded, and requires the quality-gate task itself to be FAILED; inspect that task's detail and pod logs without exposing credentials |
-| Artifact hand-off is missing | The test requires Dataset/Model artifact IDs on declared producer outputs and consumer inputs; inspect task details and KFP metadata/artifact-store configuration |
+| Artifact hand-off is missing | Inspect the compiled IR binding assertion first, then the failing consumer task logs and object-store/MinIO configuration. KFP 2.17.0's task-detail API may omit runtime artifact IDs for this Argo execution path, so don't use that field alone as hand-off evidence |
 
 The workflow prints safe Kubernetes diagnostics if the backend job fails. Use those diagnostics instead of claiming remote execution passed just because the control plane started.
 
