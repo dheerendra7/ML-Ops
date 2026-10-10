@@ -9,8 +9,8 @@ ROTATED_SECRET_FILE=""
 QUOTA_ERROR_FILE="$(mktemp)"
 
 cleanup() {
-  [[ -n "$SECRET_FILE" ]] && rm -f "$SECRET_FILE"
-  [[ -n "$ROTATED_SECRET_FILE" ]] && rm -f "$ROTATED_SECRET_FILE"
+  if [[ -n "$SECRET_FILE" ]]; then rm -f "$SECRET_FILE"; fi
+  if [[ -n "$ROTATED_SECRET_FILE" ]]; then rm -f "$ROTATED_SECRET_FILE"; fi
   rm -f "$QUOTA_ERROR_FILE"
   kubectl delete namespace mlops-lab mlops-rbac-lab mlops-secrets-lab \
     --ignore-not-found --wait=false >/dev/null 2>&1 || true
