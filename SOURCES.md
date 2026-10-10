@@ -8,6 +8,12 @@ Prefer official documentation. Verify the version selector and installed release
 - Resource management: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
 - ResourceQuota: https://kubernetes.io/docs/concepts/policy/resource-quotas/
 - LimitRange: https://kubernetes.io/docs/concepts/policy/limit-range/
+- Pods: https://kubernetes.io/docs/concepts/workloads/pods/
+- Jobs: https://kubernetes.io/docs/concepts/workloads/controllers/job/
+- Deployments: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/
+- Services: https://kubernetes.io/docs/concepts/services-networking/service/
+- ConfigMaps: https://kubernetes.io/docs/concepts/configuration/configmap/
+- Secrets: https://kubernetes.io/docs/concepts/configuration/secret/
 - RBAC: https://kubernetes.io/docs/reference/access-authn-authz/rbac/
 - Debugging Pods: https://kubernetes.io/docs/tasks/debug/debug-application/debug-pods/
 - kubectl apply and server-side dry run: https://kubernetes.io/docs/reference/kubectl/generated/kubectl_apply/
