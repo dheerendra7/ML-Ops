@@ -18,7 +18,7 @@ The workflow at [kfp-backend-smoke.yml](../../.github/workflows/kfp-backend-smok
 
 The example pipeline uses synthetic rows and an illustrative score. It is not a real model-training benchmark or a production-quality metric. The failed candidate is a deliberate negative test.
 
-The runner waits for the KFP API before creating the experiment, compiles the package, and waits for each run's terminal state. It then fetches each full run detail and asserts task-level states plus non-empty Dataset/Model artifact IDs for producer outputs and consumer inputs. The negative case fails closed unless all upstream tasks succeeded and the gate task itself failed. A successful installation step, API health check, or generic `FAILED` run alone is not enough.
+The runner waits for the KFP API before creating the experiment, compiles the package, and waits for each run's terminal state. It then fetches each full run detail and asserts task-level states plus non-empty Dataset/Model artifact IDs for producer outputs and consumer inputs. It also verifies that the IDs emitted by each producer exactly match the IDs recorded on its consumer's input, rather than merely checking that both sides are non-empty. The negative case fails closed unless all upstream tasks succeeded and the gate task itself failed. A successful installation step, API health check, or generic `FAILED` run alone is not enough.
 
 ## Running the workflow
 
@@ -48,7 +48,7 @@ For the specific KFP version, Kubernetes node image, SDK pin and CI environment 
 - the standalone manifests can install and reach the configured Deployment readiness criteria;
 - the Python SDK can connect through the configured API endpoint;
 - a compiled synthetic pipeline package can be submitted as a remote run;
-- the backend schedules the sample tasks and exposes non-empty artifact references for Dataset/Model producer outputs and consumer inputs;
+- the backend schedules the sample tasks and exposes non-empty Dataset/Model artifact references on producer outputs and consumer inputs, with matching IDs proving the expected hand-off;
 - every expected task on a valid candidate completes successfully;
 - the intentionally below-threshold candidate fails specifically at the quality-gate task after its upstream tasks succeed.
 
