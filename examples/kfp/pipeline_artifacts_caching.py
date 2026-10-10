@@ -70,9 +70,15 @@ def evaluate_toy_model(model: Input[Model]) -> float:
 
 @dsl.component(base_image="python:3.12-slim")
 def enforce_quality_gate(score: float, minimum_score: float) -> str:
-    """Fail the pipeline if the illustrative acceptance score is too low."""
-    if not 0.0 <= score <= 1.0:
-        raise ValueError(f"Score must be in [0, 1], got {score}")
+    """Fail closed for invalid scores/thresholds or an unmet quality criterion."""
+    import math
+
+    if not math.isfinite(score) or not 0.0 <= score <= 1.0:
+        raise ValueError(f"Score must be finite and in [0, 1], got {score}")
+    if not math.isfinite(minimum_score) or not 0.0 <= minimum_score <= 1.0:
+        raise ValueError(
+            f"Minimum score must be finite and in [0, 1], got {minimum_score}"
+        )
     if score < minimum_score:
         raise ValueError(
             f"Quality gate rejected output: score={score:.3f}, "
@@ -91,17 +97,18 @@ def enforce_quality_gate(score: float, minimum_score: float) -> str:
 def artifact_and_quality_gate_pipeline(
     offset: float = 0.0,
     minimum_score: float = 0.8,
-) -> None:
+) -> str:
     dataset_task = create_toy_dataset()
     train_task = train_toy_model(
         dataset=dataset_task.outputs["dataset"],
         offset=offset,
     )
     score_task = evaluate_toy_model(model=train_task.outputs["model"])
-    enforce_quality_gate(
+    gate_task = enforce_quality_gate(
         score=score_task.output,
         minimum_score=minimum_score,
     )
+    return gate_task.output
 
 
 def main() -> None:
