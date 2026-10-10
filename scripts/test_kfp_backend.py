@@ -26,18 +26,22 @@ def normalise_state(value: Any) -> str:
     return str(value or "").rsplit(".", 1)[-1].lower()
 
 
-def wait_for_api(client: Client, attempts: int, delay_seconds: int) -> None:
+def wait_for_api(host: str, attempts: int, delay_seconds: int) -> Client:
     last_error: Exception | None = None
     for attempt in range(1, attempts + 1):
         try:
-            # This invokes the real KFP API; a TCP port-forward alone isn't
-            # enough evidence that the backend is ready to accept requests.
+            # Client construction itself probes the health endpoint, so it
+            # must live inside the retry loop too. This covers the race where
+            # kubectl port-forward has started as a process but is not serving
+            # its local port yet.
+            client = Client(host=host)
             client.list_experiments(page_size=1)
             print(f"PASS: standalone KFP API answered on attempt {attempt}")
-            return
+            return client
         except Exception as exc:  # API may still be starting or dependencies warming up.
             last_error = exc
-            time.sleep(delay_seconds)
+            if attempt < attempts:
+                time.sleep(delay_seconds)
     raise RuntimeError(
         f"KFP API did not become ready after {attempts} attempts; "
         f"last error type={type(last_error).__name__}"
@@ -65,8 +69,7 @@ def main() -> int:
         raise AssertionError("KFP compiler did not write a non-empty pipeline package")
     print("PASS: compiled KFP pipeline package")
 
-    client = Client(host=args.host)
-    wait_for_api(client, args.api_attempts, args.api_delay_seconds)
+    client = wait_for_api(args.host, args.api_attempts, args.api_delay_seconds)
     experiment = client.create_experiment(name="mlops-handbook-backend-smoke")
     experiment_id = experiment.experiment_id
 
