@@ -72,6 +72,13 @@ def check_local_pipeline() -> int:
     # DockerRunner intentionally executes the same containerized component type
     # described in the guide. The local run is not a remote KFP backend test.
     with tempfile.TemporaryDirectory(prefix="mlops-kfp-local-") as pipeline_root:
+        # Keep the KFP workspace inside our own temporary root rather than
+        # letting KFP create an implicit top-level /tmp workspace. This makes
+        # the path lifecycle explicit and lets the outer TemporaryDirectory
+        # clean up any remaining files even after an intentionally failed task.
+        workspace_root = str(Path(pipeline_root) / "workspace")
+        Path(workspace_root).mkdir()
+
         # Run task containers as the current runner user so files written to
         # mounted temporary paths remain removable by the host process.
         docker_runner_args = {"environment": {"HOME": "/tmp"}}
@@ -81,6 +88,7 @@ def check_local_pipeline() -> int:
         local.init(
             runner=local.DockerRunner(**docker_runner_args),
             pipeline_root=pipeline_root,
+            workspace_root=workspace_root,
             raise_on_error=True,
             enable_caching=False,
         )
