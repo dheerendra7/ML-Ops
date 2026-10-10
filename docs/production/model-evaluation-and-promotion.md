@@ -68,7 +68,7 @@ Sirf log mein "quality gate failed" print karna enforcement nahi hai. DAG depend
 
 ## 5. Synthetic KFP example in this repo
 
-[Pipeline artifact and quality-gate example](../examples/kfp/pipeline_artifacts_caching.py) intentionally synthetic hai. It builds a tiny mean-baseline artifact, calculates an illustrative score and fails when an input offset pushes that score below a selected threshold.
+[Pipeline artifact and quality-gate example](../../examples/kfp/pipeline_artifacts_caching.py) intentionally synthetic hai. It builds a tiny mean-baseline artifact, calculates an illustrative score and fails when an input offset pushes that score below a selected threshold.
 
 Ye demonstration artifact wiring, threshold checking aur compile-time checks sikhane ke liye hai. Iska score actual statistical validation, fairness, calibration, safety, or business acceptance ka substitute nahi hai.
 
