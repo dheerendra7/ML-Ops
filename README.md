@@ -42,6 +42,7 @@ Start with [`docs/LEARNING-PATH.md`](docs/LEARNING-PATH.md), then use the topic 
 ## Hands-on learning and automated checks
 
 - [Lab 01 — Kubernetes resource governance](docs/labs/resource-governance.md) walks through ResourceQuota, LimitRange, server-side dry run, expected quota rejection, troubleshooting, and cleanup.
+- [Lab 02 — Least-privilege RBAC](docs/security/least-privilege-rbac-lab.md) checks allowed and denied ServiceAccount actions in a disposable namespace.
 - GitHub Actions checks relative Markdown links, fenced code-block closure, YAML syntax, Python source syntax, KFP pipeline compilation, and the container image smoke test on pushes and pull requests.
 - These checks validate docs, compilation, and a local container smoke test. They do **not** prove a live Kubernetes/Kubeflow deployment works; cluster testing against a named version remains separate.
 
