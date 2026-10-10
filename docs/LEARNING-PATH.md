@@ -24,5 +24,7 @@ Use the [debugging checklist](troubleshooting/debugging-checklist.md), [producti
 ## Stage 6 — Recall and interview
 Use [revision cards](interview/revision-cards.md). Answer aloud, then verify against the topic guide and official references.
 
+Before calling a lab tested, check the [lab validation matrix](testing/lab-validation-matrix.md) and confirm the latest commit's relevant CI jobs are green.
+
 ## Completion criteria
 Explain the concept, review or run the example, identify two failure modes, and state what must be checked for your installed version.
