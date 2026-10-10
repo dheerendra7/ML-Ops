@@ -102,6 +102,37 @@ def main() -> int:
 
     job_docs = read_yaml("examples/workloads/handbook-smoke-job.yaml")
     check(len(job_docs) == 1 and isinstance(job_docs[0], dict) and job_docs[0].get("kind") == "Job", "handbook smoke example must be a single Job")
+
+    # External Secrets Operator + HashiCorp Vault example invariants.
+    store_docs = read_yaml("examples/security/external-secrets/vault-secret-store.example.yaml")
+    check(len(store_docs) == 1 and isinstance(store_docs[0], dict), "Vault SecretStore example must be one YAML object")
+    if store_docs and isinstance(store_docs[0], dict):
+        store = store_docs[0]
+        provider = store.get("spec", {}).get("provider", {}).get("vault", {})
+        auth = provider.get("auth", {})
+        token_ref = auth.get("tokenSecretRef", {})
+        check(store.get("apiVersion") == "external-secrets.io/v1" and store.get("kind") == "SecretStore", "Vault example must use the supported ESO SecretStore API")
+        check(store.get("metadata", {}).get("namespace") == "mlops-vault-lab", "Vault SecretStore must remain scoped to the disposable lab namespace")
+        check(provider.get("server") == "http://vault.vault.svc.cluster.local:8200" and provider.get("path") == "secret" and provider.get("version") == "v2", "Vault provider must target the local Vault KV v2 service")
+        check(token_ref.get("name") == "vault-token" and token_ref.get("key") == "token", "Vault token must come from a Kubernetes Secret reference, never a manifest literal")
+
+    external_docs = read_yaml("examples/security/external-secrets/vault-external-secret.example.yaml")
+    check(len(external_docs) == 1 and isinstance(external_docs[0], dict), "Vault ExternalSecret example must be one YAML object")
+    if external_docs and isinstance(external_docs[0], dict):
+        external = external_docs[0]
+        spec = external.get("spec", {})
+        data = spec.get("data", [])
+        check(external.get("apiVersion") == "external-secrets.io/v1" and external.get("kind") == "ExternalSecret", "Vault example must use the supported ESO ExternalSecret API")
+        check(external.get("metadata", {}).get("namespace") == "mlops-vault-lab", "Vault ExternalSecret must remain scoped to the disposable lab namespace")
+        check(spec.get("secretStoreRef", {}).get("name") == "vault-local" and spec.get("target", {}).get("name") == "mlops-app-consumer", "ExternalSecret must bind the expected local store and target Secret")
+        check(spec.get("refreshInterval") == "10s", "Vault ExternalSecret must exercise a bounded, short refresh interval for rotation")
+        check(len(data) == 1 and data[0].get("secretKey") == "password" and data[0].get("remoteRef", {}).get("key") == "mlops-app" and data[0].get("remoteRef", {}).get("property") == "password", "ExternalSecret must sync only the intended Vault KV property")
+
+    vault_lab_script = (ROOT / "scripts/test_vault_external_secrets.sh").read_text(encoding="utf-8")
+    check("VAULT_CHART_VERSION=\"0.34.1\"" in vault_lab_script and "ESO_CHART_VERSION=\"2.12.0\"" in vault_lab_script, "Vault and ESO chart versions must be pinned")
+    check('path "secret/data/mlops-app" { capabilities = ["read"] }' in vault_lab_script, "Vault smoke lab must use a path-scoped read-only policy")
+    check("set -Eeuo pipefail" in vault_lab_script and "wait_for_synced_value" in vault_lab_script, "Vault smoke lab must fail closed and verify sync/rotation")
+    check("set -x" not in vault_lab_script, "Vault smoke lab must not enable shell xtrace while handling tokens")
     print(f"Example regression checks: {CHECKS} assertions, {len(FAILURES)} failure(s).")
     if FAILURES:
         for failure in FAILURES:
