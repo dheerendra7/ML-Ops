@@ -22,5 +22,11 @@ This roadmap describes learning-content priorities, not promised release dates.
 - [ ] Cost controls and GPU scheduling
 - [ ] Tested lab matrix for specific Kubernetes/Kubeflow versions
 
+## Quality engineering progress
+
+- [x] Add a GitHub Actions workflow for local Markdown link, code-fence, and YAML syntax checks.
+- [x] Add a guided ResourceQuota and LimitRange lab with preflight checks, expected outcomes, troubleshooting, and cleanup.
+- [ ] Run the lab on explicitly documented Kubernetes versions and record results; this has **not** been completed by the static CI checks.
+
 ## Quality bar
 Each guide should explain assumptions, link official sources, label risky commands, distinguish version-dependent behavior, and include verification steps. YAML should be syntax-checked and tested against a target cluster before being described as tested.
