@@ -15,7 +15,7 @@ Read [KFP component types](kubeflow/kfp-component-types.md), then [KFP run lifec
 **You should be able to:** choose a component type, explain artifact hand-off, judge when caching/retries are safe, and explain how a quality gate blocks promotion.
 
 ## Stage 4 — Multi-user and resource isolation
-Read [Profiles and namespaces](kubeflow/profiles-namespaces-isolation.md), then inspect the YAML examples. Then complete [Lab 01 — resource governance](labs/resource-governance.md) in a disposable cluster.
+Read [Profiles and namespaces](kubeflow/profiles-namespaces-isolation.md), then complete [Lab 01 — resource governance](labs/resource-governance.md) and [Lab 02 — least-privilege RBAC](security/least-privilege-rbac-lab.md) in a disposable cluster.
 **You should be able to:** distinguish aggregate quota, per-object constraints, RBAC, and workload identity.
 
 ## Stage 5 — Operate and debug
