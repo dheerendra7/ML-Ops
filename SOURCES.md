@@ -17,6 +17,7 @@ Prefer official documentation. Verify the version selector and installed release
 - ConfigMaps: https://kubernetes.io/docs/concepts/configuration/configmap/
 - Secrets: https://kubernetes.io/docs/concepts/configuration/secret/
 - RBAC: https://kubernetes.io/docs/reference/access-authn-authz/rbac/
+- kubectl auth can-i: https://kubernetes.io/docs/reference/kubectl/generated/kubectl_auth/kubectl_auth_can-i/
 - Debugging Pods: https://kubernetes.io/docs/tasks/debug/debug-application/debug-pods/
 - kubectl apply and server-side dry run: https://kubernetes.io/docs/reference/kubectl/generated/kubectl_apply/
 - kubectl run and supported flags/overrides: https://kubernetes.io/docs/reference/kubectl/generated/kubectl_run/
