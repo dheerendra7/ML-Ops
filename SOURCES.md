@@ -17,6 +17,7 @@ Prefer official documentation. Verify the version selector and installed release
 - Services: https://kubernetes.io/docs/concepts/services-networking/service/
 - ConfigMaps: https://kubernetes.io/docs/concepts/configuration/configmap/
 - Secrets: https://kubernetes.io/docs/concepts/configuration/secret/
+- Distribute credentials securely to Pods: https://kubernetes.io/docs/tasks/inject-data-application/distribute-credentials-secure/
 - RBAC: https://kubernetes.io/docs/reference/access-authn-authz/rbac/
 - kubectl auth can-i: https://kubernetes.io/docs/reference/kubectl/generated/kubectl_auth/kubectl_auth_can-i/
 - Debugging Pods: https://kubernetes.io/docs/tasks/debug/debug-application/debug-pods/
