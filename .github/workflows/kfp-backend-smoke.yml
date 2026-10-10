@@ -39,9 +39,9 @@ jobs:
           kubectl apply -k "https://github.com/kubeflow/pipelines/manifests/kustomize/cluster-scoped-resources?ref=2.17.0"
           kubectl wait --for=condition=Established crd --all --timeout=180s
 
-      - name: Install the KFP 2.17.0 single-user plain environment
+      - name: Install the KFP 2.17.0 platform-agnostic environment
         run: |
-          kubectl apply -k "https://github.com/kubeflow/pipelines/manifests/kustomize/env/plain?ref=2.17.0"
+          kubectl apply -k "https://github.com/kubeflow/pipelines/manifests/kustomize/env/platform-agnostic?ref=2.17.0"
           kubectl wait --for=condition=Available deployments --all -n kubeflow --timeout=600s
           kubectl get pods,services,deployments -n kubeflow -o wide
 
