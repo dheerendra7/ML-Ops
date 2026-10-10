@@ -62,7 +62,7 @@ It is still only a focused smoke test. It does not establish production availabi
 | Cluster-scoped KFP resources | Check API validation errors and CRD establishment |
 | Platform-agnostic rollout | Inspect Pods, events, Deployment availability, image pulls, resource pressure and database/storage readiness |
 | Client SDK installation | Check Python interpreter and installable pinned SDK |
-| API health check | Verify the port-forward process and service HTTP port; retry SDK client initialization while startup completes |
+| API health check | Verify the port-forward process and service HTTP port; retry SDK client initialization while startup completes. Start kubectl before isolating HOME for the KFP client, otherwise kubectl may lose the Kind kubeconfig. |
 | Experiment/run submission | Inspect API response, namespace/context and backend logs without printing credentials |
 | Run waits but does not finish | Check workflow-controller/task Pods, image pulls, task logs, artifact store and admission/quota issues |
 | Positive run succeeds but negative run also succeeds | Inspect quality-gate component and submitted parameters; a pipeline failure alone is insufficient if it failed for an unrelated runtime error |
