@@ -18,7 +18,7 @@ This roadmap describes learning-content priorities, not promised release dates.
 - [x] Model evaluation gates and promotion strategies guide, linked to the synthetic KFP gate example
 - [x] Namespace-scoped least-privilege RBAC verification lab
 - [ ] Secret management, rotation, and external secret integration lab
-- [ ] Observability: logs, metrics, traces, and pipeline signals
+- [x] Observability: logs, metrics, traces, alerts, and ML/data pipeline signals guide
 - [ ] Reproducibility, lineage, and experiment tracking
 - [ ] Cost controls and GPU scheduling
 - [ ] Tested lab matrix for specific Kubernetes/Kubeflow versions
@@ -32,6 +32,7 @@ This roadmap describes learning-content priorities, not promised release dates.
 - [x] Add container image guidance, a non-root sample image, and a CI smoke test.
 - [x] Add an evidence-focused model evaluation and staged-promotion guide.
 - [x] Add a namespace-scoped RBAC lab that tests both expected allow and deny outcomes.
+- [x] Add an actionable observability guide covering logs, metrics, traces, alert design and model/data signals.
 - [x] Add a synthetic KFP artifact-to-quality-gate pipeline and compile it in CI.
 - [x] Extend repository checks to syntax-check Python files.
 - [ ] Run the lab on explicitly documented Kubernetes versions and record results; this has **not** been completed by the static CI checks.
