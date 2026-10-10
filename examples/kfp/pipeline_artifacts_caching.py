@@ -4,8 +4,6 @@ This uses synthetic values. It is a teaching example, not a real ML model.
 Compile with the pinned SDK in this directory's requirements.txt.
 """
 
-from __future__ import annotations
-
 import argparse
 from pathlib import Path
 
