@@ -10,7 +10,7 @@
 - **Retries** failed task ko dobara execute karte hain. Ye transient failures ke liye hain, deterministic code/quality failures ko hide karne ke liye nahi.
 - **Quality gate** evaluation evidence ko explicit acceptance rule ke against check karta hai aur fail hone par promotion rokna chahiye.
 
-Exact SDK API aur backend support installed KFP version ke saath verify karo. Is repo ka example KFP SDK v2.17.0 par compile smoke test karta hai; live cluster version isse different ho sakta hai.
+Exact SDK API aur backend support installed KFP version ke saath verify karo. Is repo ka example KFP SDK v2.17.2 par compile smoke test karta hai; live cluster version isse different ho sakta hai.
 
 ## 1. Pipeline run lifecycle
 
@@ -99,6 +99,14 @@ python examples/kfp/pipeline_artifacts_caching.py --output $env:TEMP\artifact-ga
 ~~~
 
 Expected result: compiler output mein generated pipeline file ka path print hota hai aur YAML file non-empty hoti hai. Is command se **pipeline compile hoti hai; remote KFP run submit nahi hota**. CI bhi isi compilation step ko validate karta hai.
+
+CI ab ek additional step bhi chalata hai: [local runtime regression test](../../scripts/test_kfp_local.py). KFP `DockerRunner` se successful artifact-to-gate flow execute hota hai, aur intentionally below-threshold candidate ka pipeline failure bhi verify hota hai. Gate ka boundary behavior invalid scores/thresholds (NaN/infinity/out-of-range) ke saath check hota hai. Is test ko run karne ke liye local Docker daemon chahiye:
+
+~~~bash
+python scripts/test_kfp_local.py
+~~~
+
+Local runner KFP component/artifact behavior verify karta hai, lekin caching/retry production semantics, authentication, remote artifact-store configuration aur a real KFP backend ko test nahi karta.
 
 Real run ke liye target KFP backend ka compatible SDK use karo aur configured API endpoint, authentication, pipeline root/artifact storage, permissions aur required infrastructure verify karo. Remote credentials is repo mein nahi rakhe jate.
 
