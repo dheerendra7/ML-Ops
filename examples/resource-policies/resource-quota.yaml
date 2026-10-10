@@ -7,6 +7,6 @@ spec:
   hard:
     requests.cpu: "500m"
     requests.memory: 1Gi
-    limits.cpu: "1"
+    limits.cpu: "2"
     limits.memory: 2Gi
     pods: "5"
