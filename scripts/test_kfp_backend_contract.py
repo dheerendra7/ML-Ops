@@ -92,6 +92,14 @@ class KfpBackendContractTests(unittest.TestCase):
         with self.assertRaisesRegex(AssertionError, "Artifact hand-off mismatch"):
             verify_successful_run(run)
 
+    def test_duplicate_expected_pipeline_task_is_rejected(self) -> None:
+        run = valid_run("SUCCEEDED")
+        run["run_details"]["task_details"].append(
+            task("enforce-quality-gate", "SUCCEEDED")
+        )
+        with self.assertRaisesRegex(AssertionError, "duplicate pipeline task"):
+            verify_successful_run(run)
+
     def test_missing_task_details_fail_closed(self) -> None:
         with self.assertRaisesRegex(AssertionError, "task_details"):
             verify_successful_run({"run_details": {"task_details": []}})
