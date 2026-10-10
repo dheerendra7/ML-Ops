@@ -3,7 +3,7 @@
 Use one session per topic. Read the snapshot, explain the concept without looking, run examples only in an environment you control, then test yourself with revision questions.
 
 ## Stage 1 — Foundations
-Learn containers, Pods, namespaces, requests and limits. Read [resource controls](kubernetes-foundations/resource-controls.md).
+Learn containers, Pods, Jobs, Deployments, namespaces, requests and limits. Read [workload basics](kubernetes-foundations/workloads-and-configuration.md) and [resource controls](kubernetes-foundations/resource-controls.md).
 **You should be able to:** explain Pending Pods, memory OOM termination, and why quotas differ from per-container limits.
 
 ## Stage 2 — Kubeflow mental model
