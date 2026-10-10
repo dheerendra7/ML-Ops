@@ -51,6 +51,9 @@ jobs:
           python examples/kfp/pipeline_artifacts_caching.py --output "$RUNNER_TEMP/artifact-gate-pipeline.yaml"
           python -c 'import os, yaml; from pathlib import Path; p = Path(os.environ["RUNNER_TEMP"]) / "artifact-gate-pipeline.yaml"; d = yaml.safe_load(p.read_text(encoding="utf-8")); assert isinstance(d, dict) and d; print("Compiled pipeline YAML parsed successfully.")'
 
+      - name: Run KFP pipeline locally and test quality-gate behavior
+        run: python scripts/test_kfp_local.py
+
   container-smoke-test:
     name: Build and run container smoke test
     runs-on: ubuntu-latest
