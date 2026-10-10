@@ -45,7 +45,7 @@ This roadmap describes learning-content priorities, not promised release dates.
 - [x] Verify the revised standalone KFP backend smoke test with compiled-binding checks, consumer-side artifact validation and gate-specific rejection; passed in [run #38077683009](https://github.com/dheerendra7/ML-Ops/actions/runs/38077683009).
 - [x] Add semantic regression assertions for RBAC, GPU, lineage, resource-policy, and container examples.
 - [x] Add live disposable-Kubernetes integration checks for ResourceQuota, LimitRange defaults, Job completion, RBAC allow/deny, and synthetic Secret rotation on two pinned Kubernetes versions.
-- [ ] Validate a full Kubeflow/community distribution, GPU hardware execution, production Vault Kubernetes authentication/TLS, and additional cloud secret-provider integrations; the current CI does not cover these.
+- [x] Document the environment-dependent validation boundaries in the README and lab matrix: full Kubeflow/community distribution, real GPU hardware, production Vault Kubernetes authentication/TLS/HA, and additional cloud secret-provider integrations remain unverified.
 
 ## Quality bar
 Each guide should explain assumptions, link official sources, label risky commands, distinguish version-dependent behavior, and include verification steps. YAML should be syntax-checked and tested against a target cluster before being described as tested.
