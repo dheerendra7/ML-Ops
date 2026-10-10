@@ -36,26 +36,24 @@ def task(
 
 
 def valid_run(gate_state: str = "SUCCEEDED") -> dict[str, Any]:
-    dataset_artifact = {"artifact_ids": ["dataset-artifact-id"]}
-    model_artifact = {"artifact_ids": ["model-artifact-id"]}
     return {
         "run_details": {
             "task_details": [
                 task(
                     "create-toy-dataset",
                     "SUCCEEDED",
-                    outputs={"dataset": dataset_artifact},
+                    outputs={"dataset": {"artifact_ids": ["dataset-artifact-id"]}},
                 ),
                 task(
                     "train-toy-model",
                     "SUCCEEDED",
-                    inputs={"dataset": dataset_artifact},
-                    outputs={"model": model_artifact},
+                    inputs={"dataset": {"artifact_ids": ["dataset-artifact-id"]}},
+                    outputs={"model": {"artifact_ids": ["model-artifact-id"]}},
                 ),
                 task(
                     "evaluate-toy-model",
                     "SUCCEEDED",
-                    inputs={"model": model_artifact},
+                    inputs={"model": {"artifact_ids": ["model-artifact-id"]}},
                 ),
                 task("enforce-quality-gate", gate_state),
             ]
@@ -80,6 +78,14 @@ class KfpBackendContractTests(unittest.TestCase):
         run = valid_run("SUCCEEDED")
         run["run_details"]["task_details"][1]["outputs"]["model"]["artifact_ids"] = []
         with self.assertRaisesRegex(AssertionError, "model"):
+            verify_successful_run(run)
+
+    def test_mismatched_artifact_ids_are_rejected(self) -> None:
+        run = valid_run("SUCCEEDED")
+        run["run_details"]["task_details"][1]["inputs"]["dataset"]["artifact_ids"] = [
+            "different-dataset-artifact-id"
+        ]
+        with self.assertRaisesRegex(AssertionError, "Artifact hand-off mismatch"):
             verify_successful_run(run)
 
     def test_missing_task_details_fail_closed(self) -> None:
