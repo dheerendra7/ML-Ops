@@ -61,7 +61,7 @@ Kubernetes and Kubeflow behavior can vary by release, installation method, and e
 
 ## Try the examples safely
 
-The YAML under `examples/` illustrates resource policies. Inspect it before applying. It does not create a Kubeflow installation and does not replace namespace-specific policy review. Prefer a disposable development cluster, and never paste credentials or tokens into issues or commits.
+The `examples/` directory contains educational YAML, Python, and container-image examples. Review each example and its version assumptions before running it; none of the samples automatically creates a Kubeflow installation. Use a disposable development cluster for Kubernetes labs, never bake credentials into images, and never paste tokens or secrets into issues or commits.
 
 ## Contributing
 
