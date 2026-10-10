@@ -25,7 +25,7 @@ This roadmap describes learning-content priorities, not promised release dates.
 ## Quality engineering progress
 
 - [x] Expand the core Kubernetes resource, Kubeflow architecture, KFP components, Profile/isolation, debugging, and production-readiness guides into beginner-friendly Hinglish.
-- [x] Add a GitHub Actions workflow for local Markdown links, fenced-block closure, and YAML syntax checks.
+- [x] Add a GitHub Actions workflow for local Markdown links, fenced-block closure, YAML syntax, Python source syntax, pinned KFP compilation, and container smoke testing.
 - [x] Add a guided ResourceQuota and LimitRange lab with preflight checks, expected outcomes, troubleshooting, and cleanup.
 - [x] Add a lightweight Kubernetes Job manifest and explain workload/configuration object choices.
 - [x] Add container image guidance, a non-root sample image, and a CI smoke test.
