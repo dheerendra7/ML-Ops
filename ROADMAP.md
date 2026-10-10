@@ -13,9 +13,9 @@ This roadmap describes learning-content priorities, not promised release dates.
 
 ## Next content milestones
 - [x] Kubernetes workload basics: Pod, Job, Deployment, Service, ConfigMap, Secret
-- [ ] Container image build, scanning, and digest pinning
-- [ ] KFP lifecycle, artifacts, caching, retries, and parameters
-- [ ] Model evaluation gates and promotion strategies
+- [x] Container image build, scanning, and digest pinning guide plus a non-root smoke-test image
+- [x] KFP lifecycle, artifacts, caching, retries, parameters, and quality-gate example with compile CI
+- [x] Model evaluation gate and promotion-control concepts covered in the KFP guide/sample
 - [ ] Secrets, workload identity, and least-privilege RBAC labs
 - [ ] Observability: logs, metrics, traces, and pipeline signals
 - [ ] Reproducibility, lineage, and experiment tracking
@@ -28,6 +28,9 @@ This roadmap describes learning-content priorities, not promised release dates.
 - [x] Add a GitHub Actions workflow for local Markdown links, fenced-block closure, and YAML syntax checks.
 - [x] Add a guided ResourceQuota and LimitRange lab with preflight checks, expected outcomes, troubleshooting, and cleanup.
 - [x] Add a lightweight Kubernetes Job manifest and explain workload/configuration object choices.
+- [x] Add container image guidance, a non-root sample image, and a CI smoke test.
+- [x] Add a synthetic KFP artifact-to-quality-gate pipeline and compile it in CI.
+- [x] Extend repository checks to syntax-check Python files.
 - [ ] Run the lab on explicitly documented Kubernetes versions and record results; this has **not** been completed by the static CI checks.
 
 ## Quality bar
