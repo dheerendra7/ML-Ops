@@ -10,7 +10,7 @@
 - **Retries** failed task ko dobara execute karte hain. Ye transient failures ke liye hain, deterministic code/quality failures ko hide karne ke liye nahi.
 - **Quality gate** evaluation evidence ko explicit acceptance rule ke against check karta hai aur fail hone par promotion rokna chahiye.
 
-Exact SDK API aur backend support installed KFP version ke saath verify karo. Is repo ka example KFP SDK v2.17.2 par compile smoke test karta hai; live cluster version isse different ho sakta hai.
+Exact SDK API aur backend support installed KFP version ke saath verify karo. Is repo ka example KFP SDK v2.17.0 par compile smoke test karta hai; live cluster version isse different ho sakta hai.
 
 ## 1. Pipeline run lifecycle
 
