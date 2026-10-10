@@ -32,6 +32,7 @@ Start with [`docs/LEARNING-PATH.md`](docs/LEARNING-PATH.md), then use the topic 
 - [Container image security and reproducibility](docs/containers/image-security-and-reproducibility.md)
 - [KFP lifecycle, artifacts, caching, retries, and quality gates](docs/kubeflow/pipeline-lifecycle-artifacts-caching-retries.md)
 - [Model evaluation gates and promotion](docs/production/model-evaluation-and-promotion.md)
+- [Observability for ML pipelines](docs/production/observability-for-ml-pipelines.md)
 - [Troubleshooting checklist](docs/troubleshooting/debugging-checklist.md)
 - [Production-readiness checklist](docs/production/readiness-checklist.md)
 - [Interview revision cards](docs/interview/revision-cards.md)
@@ -43,6 +44,7 @@ Start with [`docs/LEARNING-PATH.md`](docs/LEARNING-PATH.md), then use the topic 
 
 - [Lab 01 — Kubernetes resource governance](docs/labs/resource-governance.md) walks through ResourceQuota, LimitRange, server-side dry run, expected quota rejection, troubleshooting, and cleanup.
 - [Lab 02 — Least-privilege RBAC](docs/security/least-privilege-rbac-lab.md) checks allowed and denied ServiceAccount actions in a disposable namespace.
+- CI also compiles the synthetic KFP example and builds/runs the container smoke test.
 - GitHub Actions checks relative Markdown links, fenced code-block closure, YAML syntax, Python source syntax, KFP pipeline compilation, and the container image smoke test on pushes and pull requests.
 - These checks validate docs, compilation, and a local container smoke test. They do **not** prove a live Kubernetes/Kubeflow deployment works; cluster testing against a named version remains separate.
 
