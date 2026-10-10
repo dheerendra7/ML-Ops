@@ -4,9 +4,12 @@
 from __future__ import annotations
 
 import sys
+import tempfile
 import unittest
 from pathlib import Path
 from typing import Any
+
+from kfp import compiler
 
 ROOT = Path(__file__).resolve().parents[1]
 SCRIPTS = ROOT / "scripts"
@@ -16,8 +19,12 @@ if str(SCRIPTS) not in sys.path:
 from test_kfp_backend import (  # noqa: E402
     normalise_state,
     verify_artifact_wiring,
+    verify_compiled_artifact_wiring,
     verify_rejected_run,
     verify_successful_run,
+)
+from examples.kfp.pipeline_artifacts_caching import (  # noqa: E402
+    artifact_and_quality_gate_pipeline,
 )
 
 
@@ -113,16 +120,33 @@ class KfpBackendContractTests(unittest.TestCase):
     def test_compiled_artifact_wiring_is_accepted(self) -> None:
         verify_artifact_wiring(valid_pipeline_spec())
 
+    def test_actual_pipeline_compiles_with_expected_artifact_bindings(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="mlops-kfp-contract-") as temp_dir:
+            package_path = Path(temp_dir) / "pipeline.yaml"
+            compiler.Compiler().compile(
+                pipeline_func=artifact_and_quality_gate_pipeline,
+                package_path=str(package_path),
+            )
+            self.assertTrue(package_path.is_file())
+            self.assertGreater(package_path.stat().st_size, 0)
+            verify_compiled_artifact_wiring(package_path)
+
     def test_wrong_dataset_producer_is_rejected(self) -> None:
         spec = valid_pipeline_spec()
-        binding = spec["root"]["dag"]["tasks"]["train-toy-model"]["inputs"]["artifacts"]["dataset"]["taskOutputArtifact"]
+        binding = (
+            spec["root"]["dag"]["tasks"]["train-toy-model"]["inputs"]["artifacts"]
+            ["dataset"]["taskOutputArtifact"]
+        )
         binding["producerTask"] = "some-other-task"
         with self.assertRaisesRegex(AssertionError, "train-toy-model.dataset"):
             verify_artifact_wiring(spec)
 
     def test_wrong_model_output_key_is_rejected(self) -> None:
         spec = valid_pipeline_spec()
-        binding = spec["root"]["dag"]["tasks"]["evaluate-toy-model"]["inputs"]["artifacts"]["model"]["taskOutputArtifact"]
+        binding = (
+            spec["root"]["dag"]["tasks"]["evaluate-toy-model"]["inputs"]["artifacts"]
+            ["model"]["taskOutputArtifact"]
+        )
         binding["outputArtifactKey"] = "wrong-output"
         with self.assertRaisesRegex(AssertionError, "evaluate-toy-model.model"):
             verify_artifact_wiring(spec)
