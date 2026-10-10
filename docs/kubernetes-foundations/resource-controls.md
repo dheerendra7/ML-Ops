@@ -48,7 +48,7 @@ ResourceQuota namespace ke andar total resource consumption aur kuch Kubernetes 
 
 - total CPU requests ka budget **500m**;
 - total memory requests ka budget **1Gi**;
-- total CPU limits ka budget **1**;
+- total CPU limits ka budget **2**;
 - total memory limits ka budget **2Gi**;
 - namespace ke andar Pods ki count **5**.
 
