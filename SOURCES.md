@@ -9,6 +9,7 @@ Prefer official documentation. Verify the version selector and installed release
 - Namespaces: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
 - Resource management: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
 - ResourceQuota: https://kubernetes.io/docs/concepts/policy/resource-quotas/
+- GPU scheduling and device plugins: https://kubernetes.io/docs/tasks/manage-gpus/scheduling-gpus/
 - LimitRange: https://kubernetes.io/docs/concepts/policy/limit-range/
 - Pods: https://kubernetes.io/docs/concepts/workloads/pods/
 - Jobs: https://kubernetes.io/docs/concepts/workloads/controllers/job/
