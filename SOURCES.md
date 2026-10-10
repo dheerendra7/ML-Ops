@@ -33,6 +33,11 @@ Prefer official documentation. Verify the version selector and installed release
 - KFP caching: https://www.kubeflow.org/docs/components/pipelines/user-guides/core-functions/caching/
 - KFP task configuration and retries: https://www.kubeflow.org/docs/components/pipelines/user-guides/components/compose-components-into-pipelines/
 - Container build best practices: https://docs.docker.com/build/building/best-practices/
+- Kubernetes observability: https://kubernetes.io/docs/concepts/cluster-administration/observability/
+- Kubernetes logging architecture: https://kubernetes.io/docs/concepts/cluster-administration/logging/
+- OpenTelemetry signals: https://opentelemetry.io/docs/concepts/signals/
+- Prometheus instrumentation guidance: https://prometheus.io/docs/practices/instrumentation/
+- Prometheus alerting guidance: https://prometheus.io/docs/practices/alerting/
 - KFP releases and SDK version notes: https://github.com/kubeflow/pipelines/releases
 - Profiles: https://www.kubeflow.org/docs/components/central-dash/profiles/
 
