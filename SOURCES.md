@@ -4,6 +4,8 @@ Prefer official documentation. Verify the version selector and installed release
 
 ## Kubernetes
 - Concepts: https://kubernetes.io/docs/concepts/
+- Container images and digest pinning: https://kubernetes.io/docs/concepts/containers/images/
+- Kubernetes security checklist: https://kubernetes.io/docs/concepts/security/security-checklist/
 - Namespaces: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
 - Resource management: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
 - ResourceQuota: https://kubernetes.io/docs/concepts/policy/resource-quotas/
@@ -25,6 +27,12 @@ Prefer official documentation. Verify the version selector and installed release
 - Documentation: https://www.kubeflow.org/docs/
 - KFP component guides: https://www.kubeflow.org/docs/components/pipelines/user-guides/components/
 - KFP SDK docs: https://kubeflow-pipelines.readthedocs.io/
+- KFP parameters and data types: https://www.kubeflow.org/docs/components/pipelines/user-guides/data-handling/data-types/
+- KFP artifacts: https://www.kubeflow.org/docs/components/pipelines/user-guides/data-handling/artifacts/
+- KFP caching: https://www.kubeflow.org/docs/components/pipelines/user-guides/core-functions/caching/
+- KFP task configuration and retries: https://www.kubeflow.org/docs/components/pipelines/user-guides/components/compose-components-into-pipelines/
+- Container build best practices: https://docs.docker.com/build/building/best-practices/
+- KFP releases and SDK version notes: https://github.com/kubeflow/pipelines/releases
 - Profiles: https://www.kubeflow.org/docs/components/central-dash/profiles/
 
 Link the exact official page near the claim it supports. For version-sensitive behavior, include the release context. Confirm important community-sourced tips with official docs or a reproducible test.
