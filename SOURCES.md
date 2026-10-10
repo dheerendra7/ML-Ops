@@ -10,6 +10,10 @@ Prefer official documentation. Verify the version selector and installed release
 - LimitRange: https://kubernetes.io/docs/concepts/policy/limit-range/
 - RBAC: https://kubernetes.io/docs/reference/access-authn-authz/rbac/
 - Debugging Pods: https://kubernetes.io/docs/tasks/debug/debug-application/debug-pods/
+- kubectl apply and server-side dry run: https://kubernetes.io/docs/reference/kubectl/generated/kubectl_apply/
+- kubectl run and supported flags/overrides: https://kubernetes.io/docs/reference/kubectl/generated/kubectl_run/
+- kubectl logs: https://kubernetes.io/docs/reference/kubectl/generated/kubectl_logs/
+- kubectl describe: https://kubernetes.io/docs/reference/kubectl/generated/kubectl_describe/
 
 ## Kubeflow
 - Documentation: https://www.kubeflow.org/docs/
