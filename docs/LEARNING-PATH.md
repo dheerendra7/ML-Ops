@@ -19,7 +19,7 @@ Read [Profiles and namespaces](kubeflow/profiles-namespaces-isolation.md), then 
 **You should be able to:** distinguish aggregate quota, per-object constraints, RBAC, and workload identity.
 
 ## Stage 5 — Operate and debug
-Use the [debugging checklist](troubleshooting/debugging-checklist.md), [production-readiness checklist](production/readiness-checklist.md), [model evaluation/promotion guide](production/model-evaluation-and-promotion.md), and [observability guide](production/observability-for-ml-pipelines.md). Review the [container image security guide](containers/image-security-and-reproducibility.md) before publishing runtimes. Start with evidence, not random changes.
+Use the [debugging checklist](troubleshooting/debugging-checklist.md), [production-readiness checklist](production/readiness-checklist.md), [model evaluation/promotion guide](production/model-evaluation-and-promotion.md), and [observability guide](production/observability-for-ml-pipelines.md). Review the [container image security guide](containers/image-security-and-reproducibility.md), [reproducibility/lineage guide](production/reproducibility-and-lineage.md), and [cost/GPU scheduling guide](production/cost-controls-and-gpu-scheduling.md) before publishing runtimes. Start with evidence, not random changes.
 
 ## Stage 6 — Recall and interview
 Use [revision cards](interview/revision-cards.md). Answer aloud, then verify against the topic guide and official references.
