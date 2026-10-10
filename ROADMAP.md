@@ -41,6 +41,8 @@ This roadmap describes learning-content priorities, not promised release dates.
 - [x] Run the synthetic KFP pipeline through KFP DockerRunner in CI; verify artifact hand-off, successful output, expected gate rejection, and 13 score/threshold boundary cases.
 - [x] Extend repository checks to syntax-check Python files.
 - [x] Add a dedicated disposable Kind workflow that installs standalone KFP and attempts real API-based success/failure submissions; backend execution validation remains pending until that workflow passes.
+- [x] Add fast KFP backend-contract regression tests for repeated internal executor nodes, required pipeline-task states, and compiled Dataset/Model artifact bindings; the regression CI passed in [run #38077670702](https://github.com/dheerendra7/ML-Ops/actions/runs/38077670702).
+- [ ] Verify the revised standalone KFP backend smoke test with the compiled-binding checks and consumer-side artifact validation; do not count the older run #5 as evidence for this stricter revision.
 - [x] Add semantic regression assertions for RBAC, GPU, lineage, resource-policy, and container examples.
 - [x] Add live disposable-Kubernetes integration checks for ResourceQuota, LimitRange defaults, Job completion, RBAC allow/deny, and synthetic Secret rotation on two pinned Kubernetes versions.
 - [x] Verify the standalone KFP backend integration smoke test (remote run submission, artifact hand-off and expected quality-gate rejection) on KFP 2.17.0 + Kind v1.34.3; see [workflow run #5](https://github.com/dheerendra7/ML-Ops/actions/runs/38067527101) and the [backend smoke test guide](docs/testing/standalone-kfp-backend-smoke.md). Rerun this test when its workflow, script, or pipeline example changes.
