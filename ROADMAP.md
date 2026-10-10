@@ -18,7 +18,7 @@ This roadmap describes learning-content priorities, not promised release dates.
 - [x] Model evaluation gates and promotion strategies guide, linked to the synthetic KFP gate example
 - [x] Namespace-scoped least-privilege RBAC verification lab
 - [x] Kubernetes Secret handling and safe rotation lab (synthetic values only)
-- [x] Add and verify the provider-specific HashiCorp Vault + External Secrets Operator lab on pinned chart versions; the dev-mode KV v2 sync, scoped token and rotation smoke test passed in [run #38078286604](https://github.com/dheerendra7/ML-Ops/actions/runs/38078286604). Production Vault identity/TLS/HA remains outside this lab.
+- [x] Add and verify the provider-specific HashiCorp Vault + External Secrets Operator lab on pinned chart versions; [run #38078803152](https://github.com/dheerendra7/ML-Ops/actions/runs/38078803152) passed scoped Vault access, Kubernetes Secret sync, non-root consumer mount, and mounted-file rotation with synthetic values. Production Vault identity/TLS/HA remains outside this lab.
 - [x] Observability: logs, metrics, traces, alerts, and ML/data pipeline signals guide
 - [x] Reproducibility, lineage, and experiment tracking guide plus illustrative run-record template
 - [x] Cost controls and GPU scheduling guide plus explicitly non-runnable GPU Job template
