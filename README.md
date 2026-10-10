@@ -35,6 +35,7 @@ Start with [`docs/LEARNING-PATH.md`](docs/LEARNING-PATH.md), then use the topic 
 - [Observability for ML pipelines](docs/production/observability-for-ml-pipelines.md)
 - [Reproducibility, experiment tracking, and lineage](docs/production/reproducibility-and-lineage.md)
 - [Cost controls and GPU scheduling](docs/production/cost-controls-and-gpu-scheduling.md)
+- [Standalone KFP backend smoke test](docs/testing/standalone-kfp-backend-smoke.md)
 - [Troubleshooting checklist](docs/troubleshooting/debugging-checklist.md)
 - [Production-readiness checklist](docs/production/readiness-checklist.md)
 - [Interview revision cards](docs/interview/revision-cards.md)

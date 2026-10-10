@@ -13,6 +13,7 @@ This page distinguishes static checks from runtime tests. A check is considered 
 | Container smoke test | Docker image builds, configured runtime user is non-root, app starts with a read-only root filesystem and reduced Linux capabilities | Production image scanning, remote registry publishing or Kubernetes deployment |
 | KFP compile job | Sample pipeline compiles with KFP SDK 2.17.0 and generated package is parseable YAML | Submission to, or execution on, a live KFP backend |
 | KFP local runtime regression | DockerRunner executes the synthetic artifact-to-gate pipeline; passing output is checked, an intentionally rejected candidate fails at the gate task, and 13 score/threshold boundary checks run | Remote KFP auth/API, production artifact store, backend caching/retry behavior, real training or production model quality |
+| Standalone KFP backend smoke workflow | A separate disposable Kind/KFP 2.17.0 workflow is configured to submit a passing run and a rejected candidate through the KFP API | Count as verified only when the latest [standalone backend run](https://github.com/dheerendra7/ML-Ops/actions/workflows/kfp-backend-smoke.yml) completes successfully and both expected terminal states are visible in its logs |
 
 Verified baseline: [GitHub Actions run #98](https://github.com/dheerendra7/ML-Ops/actions/runs/38066109152) completed successfully for commit `04241d91e4ace2fcbca74cb9d4dfd14f795acf97`; all five jobs passed, including KFP local runtime and both Kubernetes versions. For later commits, open [the latest GitHub Actions runs](https://github.com/dheerendra7/ML-Ops/actions) and verify the exact commit and each required job.
 
@@ -41,7 +42,7 @@ The test harness deletes the dedicated namespaces when it exits. These clusters 
 ## Explicitly not covered yet
 
 - A full Kubeflow installation and multi-user Profile controller behavior.
-- Remote KFP submission/execution, configured artifact storage backend integration, and actual model training/evaluation on a configured backend. The local DockerRunner regression test is not a substitute for these.
+- Remote KFP submission/execution, configured artifact storage backend integration, and actual model training/evaluation on a configured backend remain unverified until the [standalone backend workflow](standalone-kfp-backend-smoke.md) passes. The local DockerRunner regression test is not a substitute for these.
 - Provider-specific external secret manager/CSI integration, identity federation, upstream credential revocation or rotation.
 - GPU execution. The GPU manifest is a deliberately non-runnable template until an approved GPU-enabled image/digest and compatible GPU hardware/plugin are selected.
 - Production cluster sizing, network policies, cloud IAM, persistence, cost controls and organizational policies.

@@ -40,9 +40,11 @@ This roadmap describes learning-content priorities, not promised release dates.
 - [x] Add a synthetic KFP artifact-to-quality-gate pipeline and compile it in CI.
 - [x] Run the synthetic KFP pipeline through KFP DockerRunner in CI; verify artifact hand-off, successful output, expected gate rejection, and 13 score/threshold boundary cases.
 - [x] Extend repository checks to syntax-check Python files.
+- [x] Add a dedicated disposable Kind workflow that installs standalone KFP and attempts real API-based success/failure submissions; backend execution validation remains pending until that workflow passes.
 - [x] Add semantic regression assertions for RBAC, GPU, lineage, resource-policy, and container examples.
 - [x] Add live disposable-Kubernetes integration checks for ResourceQuota, LimitRange defaults, Job completion, RBAC allow/deny, and synthetic Secret rotation on two pinned Kubernetes versions.
-- [ ] Validate full Kubeflow/KFP backend behavior (remote submission and configured artifact store), GPU hardware execution, and provider-specific secret integrations; the current CI does not cover these.
+- [ ] Complete and maintain the standalone KFP backend integration test (remote run submission, artifact hand-off and quality-gate rejection); see [backend smoke test guide](docs/testing/standalone-kfp-backend-smoke.md) and verify the current Actions outcome.
+- [ ] Validate a full Kubeflow/community distribution, GPU hardware execution, and provider-specific secret integrations; the current CI does not cover these.
 
 ## Quality bar
 Each guide should explain assumptions, link official sources, label risky commands, distinguish version-dependent behavior, and include verification steps. YAML should be syntax-checked and tested against a target cluster before being described as tested.
