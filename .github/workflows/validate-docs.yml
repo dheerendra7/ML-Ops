@@ -26,6 +26,8 @@ jobs:
 
       - name: Validate documentation and examples
         run: python scripts/validate_docs.py
+      - name: Test security-sensitive example invariants
+        run: python scripts/test_examples.py
 
   compile-kfp-example:
     name: Compile KFP v2 example
