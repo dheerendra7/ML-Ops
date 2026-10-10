@@ -59,10 +59,40 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p "$RUNNER_TEMP/kfp-backend-home"
-          export HOME="$RUNNER_TEMP/kfp-backend-home"
+          # Start kubectl while the Kind action's kubeconfig is still under the
+          # default HOME. Changing HOME before this command hides ~/.kube/config
+          # and makes port-forward exit before binding localhost:8888.
           kubectl port-forward --address 127.0.0.1 -n kubeflow svc/ml-pipeline 8888:8888 >"$RUNNER_TEMP/kfp-port-forward.log" 2>&1 &
           PORT_FORWARD_PID=$!
           trap 'kill "$PORT_FORWARD_PID" 2>/dev/null || true' EXIT
+
+          # Confirm the forwarded KFP health endpoint works before invoking the
+          # Python SDK. Print the forwarder log if kubectl exited or the API
+          # never became reachable, so the next failure has actionable evidence.
+          PORT_READY=false
+          for attempt in $(seq 1 30); do
+            if curl --fail --silent "$KFP_HOST/apis/v2beta1/healthz" >/dev/null; then
+              PORT_READY=true
+              echo "PASS: KFP health endpoint is reachable through port-forward"
+              break
+            fi
+            if ! kill -0 "$PORT_FORWARD_PID" 2>/dev/null; then
+              echo "ERROR: kubectl port-forward exited before the API became reachable."
+              cat "$RUNNER_TEMP/kfp-port-forward.log" || true
+              exit 1
+            fi
+            sleep 2
+          done
+          if [[ "$PORT_READY" != "true" ]]; then
+            echo "ERROR: KFP API did not become reachable through port-forward."
+            cat "$RUNNER_TEMP/kfp-port-forward.log" || true
+            kubectl get endpoints ml-pipeline -n kubeflow -o yaml || true
+            exit 1
+          fi
+
+          # Isolate KFP's local client-context file only after kubectl has
+          # started and the HTTP forwarding path has been verified.
+          export HOME="$RUNNER_TEMP/kfp-backend-home"
           python scripts/test_kfp_backend.py \
             --host "$KFP_HOST" \
             --package "$RUNNER_TEMP/backend-gate-pipeline.yaml" \
