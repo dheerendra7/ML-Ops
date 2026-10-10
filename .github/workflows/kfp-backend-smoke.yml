@@ -16,6 +16,10 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: standalone-kfp-backend-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   standalone-kfp-backend:
     name: Submit success and rejection runs to standalone KFP

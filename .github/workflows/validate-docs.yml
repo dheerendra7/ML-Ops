@@ -8,6 +8,10 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: validate-docs-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   validate:
     name: Markdown links, YAML, and Python syntax
@@ -29,7 +33,7 @@ jobs:
       - name: Test security-sensitive example invariants
         run: python scripts/test_examples.py
       - name: Check Kubernetes lab Bash syntax
-        run: bash -n scripts/test_kind_labs.sh
+        run: bash -n scripts/test_kind_labs.sh && bash -n scripts/test_vault_external_secrets.sh
 
   compile-kfp-example:
     name: Compile KFP v2 example
