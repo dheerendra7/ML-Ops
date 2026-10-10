@@ -49,9 +49,9 @@ Start with [`docs/LEARNING-PATH.md`](docs/LEARNING-PATH.md), then use the topic 
 - [Lab 03 — Secrets and rotation](docs/security/secrets-and-rotation-lab.md) uses only dummy credentials and explains external-manager prerequisites.
 - [Lab validation matrix](docs/testing/lab-validation-matrix.md) separates actual CI evidence from untested Kubeflow/GPU/provider scenarios.
 - The [run-record YAML](examples/lineage/run-record.example.yaml) and [GPU Job YAML](examples/cost/gpu-job.example.yaml) are educational templates; their placeholders require review before use.
-- CI also compiles the synthetic KFP example and builds/runs the container smoke test.
-- GitHub Actions checks relative Markdown links, fenced code-block closure, YAML syntax, Python source syntax, KFP pipeline compilation, and the container image smoke test on pushes and pull requests.
-- These checks validate docs, compilation, and a local container smoke test. They do **not** prove a live Kubernetes/Kubeflow deployment works; cluster testing against a named version remains separate.
+- GitHub Actions validates relative Markdown links, code fences, YAML/Python syntax, security-sensitive example invariants, KFP compilation and local runtime, the container smoke test, and core Kubernetes labs on Kind v1.34.3 and v1.35.0.
+- The KFP local test checks a successful artifact-to-gate run, an intentionally rejected candidate, and 13 score/threshold boundary cases. The Kind tests cover ResourceQuota, LimitRange defaults, a sample Job, RBAC allow/deny, and synthetic Secret rotation.
+- See the [validation matrix](docs/testing/lab-validation-matrix.md) for the exact scope and limitations. These checks still do **not** prove a full Kubeflow installation, a remote KFP backend/artifact store, GPU execution, or a provider-specific secret-manager integration.
 
 ## How each lesson is structured
 

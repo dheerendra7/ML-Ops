@@ -14,7 +14,7 @@ This roadmap describes learning-content priorities, not promised release dates.
 ## Next content milestones
 - [x] Kubernetes workload basics: Pod, Job, Deployment, Service, ConfigMap, Secret
 - [x] Container image build, scanning, and digest pinning guide plus a non-root smoke-test image
-- [x] KFP lifecycle, artifacts, caching, retries, parameters, and quality-gate example with compile CI
+- [x] KFP lifecycle, artifacts, caching, retries, parameters, and quality-gate example with compile and DockerRunner local-runtime CI
 - [x] Model evaluation gates and promotion strategies guide, linked to the synthetic KFP gate example
 - [x] Namespace-scoped least-privilege RBAC verification lab
 - [x] Kubernetes Secret handling and safe rotation lab (synthetic values only)
@@ -22,7 +22,7 @@ This roadmap describes learning-content priorities, not promised release dates.
 - [x] Observability: logs, metrics, traces, alerts, and ML/data pipeline signals guide
 - [x] Reproducibility, lineage, and experiment tracking guide plus illustrative run-record template
 - [x] Cost controls and GPU scheduling guide plus explicitly non-runnable GPU Job template
-- [x] Core Kubernetes integration labs executed in disposable Kind clusters for v1.34.3 and v1.35.0 via CI (check current run status before treating the latest commit as verified)
+- [x] Core Kubernetes integration labs executed in disposable Kind clusters for v1.34.3 and v1.35.0 via CI; see the [validation matrix](docs/testing/lab-validation-matrix.md) for run evidence
 - [ ] Full Kubeflow/KFP backend, GPU hardware, and external secret provider validation across named target installations
 
 ## Quality engineering progress
@@ -38,11 +38,11 @@ This roadmap describes learning-content priorities, not promised release dates.
 - [x] Add an actionable observability guide covering logs, metrics, traces, alert design and model/data signals.
 - [x] Add a lineage/run-record template and practical cost/GPU scheduling guidance with cluster-specific caveats.
 - [x] Add a synthetic KFP artifact-to-quality-gate pipeline and compile it in CI.
-- [x] Run the synthetic KFP pipeline locally in CI and test quality-gate boundaries, including rejected candidates and invalid metrics.
+- [x] Run the synthetic KFP pipeline through KFP DockerRunner in CI; verify artifact hand-off, successful output, expected gate rejection, and 13 score/threshold boundary cases.
 - [x] Extend repository checks to syntax-check Python files.
 - [x] Add semantic regression assertions for RBAC, GPU, lineage, resource-policy, and container examples.
 - [x] Add live disposable-Kubernetes integration checks for ResourceQuota, LimitRange defaults, Job completion, RBAC allow/deny, and synthetic Secret rotation on two pinned Kubernetes versions.
-- [ ] Validate full Kubeflow/KFP backend behavior, GPU execution and provider-specific secret integrations; the Kind matrix does not cover these.
+- [ ] Validate full Kubeflow/KFP backend behavior (remote submission and configured artifact store), GPU hardware execution, and provider-specific secret integrations; the current CI does not cover these.
 
 ## Quality bar
 Each guide should explain assumptions, link official sources, label risky commands, distinguish version-dependent behavior, and include verification steps. YAML should be syntax-checked and tested against a target cluster before being described as tested.

@@ -11,9 +11,10 @@ This page distinguishes static checks from runtime tests. A check is considered 
 | Python syntax | Python source parses using the runner's Python version | Every function behaves correctly at runtime |
 | Example regression tests | ResourceQuota values, LimitRange type, RBAC least privilege, lineage placeholders, GPU template placeholder/resource, non-root Dockerfile and ignore rules | Security posture of a real cluster or all possible manifest edits |
 | Container smoke test | Docker image builds, configured runtime user is non-root, app starts with a read-only root filesystem and reduced Linux capabilities | Production image scanning, remote registry publishing or Kubernetes deployment |
-| KFP compile job | Sample pipeline compiles with the pinned KFP SDK and generated package is parseable YAML | Submission to, or execution on, a live KFP backend |
+| KFP compile job | Sample pipeline compiles with KFP SDK 2.17.0 and generated package is parseable YAML | Submission to, or execution on, a live KFP backend |
+| KFP local runtime regression | DockerRunner executes the synthetic artifact-to-gate pipeline; passing output is checked, an intentionally rejected candidate fails at the gate task, and 13 score/threshold boundary checks run | Remote KFP auth/API, production artifact store, backend caching/retry behavior, real training or production model quality |
 
-Open [the latest GitHub Actions runs](https://github.com/dheerendra7/ML-Ops/actions) and check the exact commit plus every required job's conclusion before treating a result as verified.
+Verified baseline: [GitHub Actions run #98](https://github.com/dheerendra7/ML-Ops/actions/runs/38066109152) completed successfully for commit `04241d91e4ace2fcbca74cb9d4dfd14f795acf97`; all five jobs passed, including KFP local runtime and both Kubernetes versions. For later commits, open [the latest GitHub Actions runs](https://github.com/dheerendra7/ML-Ops/actions) and verify the exact commit and each required job.
 
 ## Disposable Kubernetes integration matrix
 
@@ -40,13 +41,13 @@ The test harness deletes the dedicated namespaces when it exits. These clusters 
 ## Explicitly not covered yet
 
 - A full Kubeflow installation and multi-user Profile controller behavior.
-- Remote KFP submission/execution, artifact storage backend integration, and actual model training/evaluation on a configured backend.
+- Remote KFP submission/execution, configured artifact storage backend integration, and actual model training/evaluation on a configured backend. The local DockerRunner regression test is not a substitute for these.
 - Provider-specific external secret manager/CSI integration, identity federation, upstream credential revocation or rotation.
 - GPU execution. The GPU manifest is a deliberately non-runnable template until an approved GPU-enabled image/digest and compatible GPU hardware/plugin are selected.
 - Production cluster sizing, network policies, cloud IAM, persistence, cost controls and organizational policies.
 - A full integration matrix across multiple supported Kubeflow releases and KFP backend configurations.
 
-A successful Kind run is valuable runtime evidence for the tested Kubernetes scenarios. It is **not** proof that a production cluster or any Kubeflow deployment behaves identically.
+A successful Kind run is runtime evidence for the scenarios and Kubernetes versions listed above. The KFP local run is runtime evidence for the SDK's local runner path only. Neither is **proof** that a production cluster or a full Kubeflow deployment behaves identically.
 
 ## Re-running locally
 

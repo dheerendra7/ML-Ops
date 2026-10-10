@@ -34,6 +34,7 @@ Prefer official documentation. Verify the version selector and installed release
 - KFP artifacts: https://www.kubeflow.org/docs/components/pipelines/user-guides/data-handling/artifacts/
 - KFP caching: https://www.kubeflow.org/docs/components/pipelines/user-guides/core-functions/caching/
 - KFP local pipeline execution: https://www.kubeflow.org/docs/components/pipelines/user-guides/core-functions/execute-kfp-pipelines-locally/
+- Docker SDK for Python: https://pypi.org/project/docker/
 - KFP task configuration and retries: https://www.kubeflow.org/docs/components/pipelines/user-guides/components/compose-components-into-pipelines/
 - Container build best practices: https://docs.docker.com/build/building/best-practices/
 - Kubernetes observability: https://kubernetes.io/docs/concepts/cluster-administration/observability/
