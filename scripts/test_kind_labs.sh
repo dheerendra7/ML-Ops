@@ -35,7 +35,12 @@ expect_can_i() {
   local namespace="$4"
   local identity="$5"
   local actual
-  actual="$(kubectl auth can-i "$verb" "$resource" -n "$namespace" --as="$identity")"
+  local command_status=0
+  actual="$(kubectl auth can-i "$verb" "$resource" -n "$namespace" --as="$identity")" || command_status=$?
+  if [[ "$command_status" -gt 1 ]]; then
+    echo "FAIL: kubectl auth can-i command itself failed for $verb $resource in $namespace" >&2
+    exit "$command_status"
+  fi
   expect_value "$actual" "$expected" "can-i $verb $resource in $namespace as $identity"
 }
 
