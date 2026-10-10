@@ -26,3 +26,24 @@ jobs:
 
       - name: Validate documentation and examples
         run: python scripts/validate_docs.py
+compile-kfp-example:
+    name: Compile KFP v2 example
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+
+      - name: Install pinned KFP SDK
+        run: python -m pip install --disable-pip-version-check -r examples/kfp/requirements.txt
+
+      - name: Compile pipeline and validate generated YAML
+        run: |
+          python examples/kfp/pipeline_artifacts_caching.py --output "$RUNNER_TEMP/artifact-gate-pipeline.yaml"
+          python -c 'import os, yaml; from pathlib import Path; p = Path(os.environ["RUNNER_TEMP"]) / "artifact-gate-pipeline.yaml"; d = yaml.safe_load(p.read_text(encoding="utf-8")); assert isinstance(d, dict) and d; print("Compiled pipeline YAML parsed successfully.")'
