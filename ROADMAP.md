@@ -43,7 +43,7 @@ This roadmap describes learning-content priorities, not promised release dates.
 - [x] Add a dedicated disposable Kind workflow that installs standalone KFP and attempts real API-based success/failure submissions; backend execution validation remains pending until that workflow passes.
 - [x] Add semantic regression assertions for RBAC, GPU, lineage, resource-policy, and container examples.
 - [x] Add live disposable-Kubernetes integration checks for ResourceQuota, LimitRange defaults, Job completion, RBAC allow/deny, and synthetic Secret rotation on two pinned Kubernetes versions.
-- [ ] Complete and maintain the standalone KFP backend integration test (remote run submission, artifact hand-off and quality-gate rejection); see [backend smoke test guide](docs/testing/standalone-kfp-backend-smoke.md) and verify the current Actions outcome.
+- [x] Verify the standalone KFP backend integration smoke test (remote run submission, artifact hand-off and expected quality-gate rejection) on KFP 2.17.0 + Kind v1.34.3; see [workflow run #5](https://github.com/dheerendra7/ML-Ops/actions/runs/38067527101) and the [backend smoke test guide](docs/testing/standalone-kfp-backend-smoke.md). Rerun this test when its workflow, script, or pipeline example changes.
 - [ ] Validate a full Kubeflow/community distribution, GPU hardware execution, and provider-specific secret integrations; the current CI does not cover these.
 
 ## Quality bar
