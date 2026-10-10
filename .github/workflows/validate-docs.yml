@@ -68,3 +68,29 @@ jobs:
 
       - name: Run with reduced container privileges
         run: docker run --rm --read-only --tmpfs /tmp:rw,noexec,nosuid,size=16m --cap-drop=ALL --security-opt=no-new-privileges mlops-handbook-smoke:ci
+  kubernetes-integration-test:
+    name: Kubernetes lab integration (${{ matrix.kubectl_version }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - kubectl_version: v1.35.0
+            node_image: kindest/node:v1.35.0@sha256:452d707d4862f52530247495d180205e029056831160e22870e37e3f6c1ac31f
+          - kubectl_version: v1.34.3
+            node_image: kindest/node:v1.34.3@sha256:08497ee19eace7b4b5348db5c6a1591d7752b164530a36f855cb0f2bdcbadd48
+    permissions:
+      contents: read
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Create digest-pinned disposable Kubernetes cluster
+        uses: helm/kind-action@v1.14.0
+        with:
+          node_image: ${{ matrix.node_image }}
+          kubectl_version: ${{ matrix.kubectl_version }}
+          wait: 120s
+
+      - name: Exercise ResourceQuota, LimitRange, Job, RBAC, and Secret rotation
+        run: bash scripts/test_kind_labs.sh
