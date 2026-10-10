@@ -56,6 +56,10 @@ def valid_run(gate_state: str = "SUCCEEDED") -> dict[str, Any]:
                     inputs={"model": {"artifact_ids": ["model-artifact-id"]}},
                 ),
                 task("enforce-quality-gate", gate_state),
+                # KFP can return repeated internal implementation nodes with
+                # the same display name. They must not be mistaken for pipeline steps.
+                task("executor", "SUCCEEDED"),
+                task("executor", "SUCCEEDED"),
             ]
         }
     }
