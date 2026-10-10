@@ -2,11 +2,11 @@ apiVersion: v1
 kind: ResourceQuota
 metadata:
   name: team-resource-budget
-  namespace: ml-team # Replace with an existing, reviewed namespace.
+  namespace: mlops-lab # Use a disposable namespace; see docs/labs/resource-governance.md.
 spec:
   hard:
-    requests.cpu: "8"
-    requests.memory: 16Gi
-    limits.cpu: "16"
-    limits.memory: 32Gi
-    pods: "30"
+    requests.cpu: "500m"
+    requests.memory: 1Gi
+    limits.cpu: "1"
+    limits.memory: 2Gi
+    pods: "5"
