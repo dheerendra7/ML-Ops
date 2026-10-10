@@ -72,7 +72,7 @@ Repo mein ye sample hai:
 - [Pipeline source](../../examples/kfp/pipeline_artifacts_caching.py)
 - [Pinned SDK requirement](../../examples/kfp/requirements.txt)
 
-Example teen rows ka synthetic dataset banata hai, usse ek toy mean-baseline model artifact write karta hai, synthetic score calculate karta hai aur threshold se compare karta hai. Ye **real training algorithm ya production metric nahi** hai; iska purpose artifact wiring aur gate behavior demonstrate karna hai.
+Example teen rows ka synthetic dataset banata hai, usse ek toy mean-baseline model artifact write karta hai, synthetic score calculate karta hai aur threshold se compare karta hai. Ye **real training algorithm ya production metric nahi** hai; iska purpose artifact wiring aur gate behavior demonstrate karna hai. Sample component image ke liye simple version tag use karta hai; production runtime ke liye [container image security and digest guidance](../containers/image-security-and-reproducibility.md) follow karo.
 
 ### Compile locally, run on no cluster
 
