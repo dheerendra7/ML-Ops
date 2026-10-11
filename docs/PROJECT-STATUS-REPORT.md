@@ -11,6 +11,10 @@ This repository is an MLOps engineering handbook with runnable examples and scop
 
 Do not use one overall completion percentage: documentation, local tests, disposable-cluster integrations, and real production infrastructure have different evidence requirements.
 
+## Standalone KFP backend integration result
+
+The standalone KFP backend smoke workflow subsequently completed successfully in [run #38117803944](https://github.com/dheerendra7/ML-Ops/actions/runs/38117803944) for commit [7aa238e](https://github.com/dheerendra7/ML-Ops/commit/7aa238ef0f1b42dd689dd71adc4440aac0a78c30). The disposable Kubernetes 1.34.3 cluster and standalone KFP 2.17.0 environment were installed, and the workflow submitted both a passing pipeline run and an expected quality-gate rejection. This is useful backend integration evidence for that tested revision, not a full Kubeflow distribution deployment or production certification.
+
 ## Latest repository-wide CI evidence
 
 The most recent complete repository-wide workflow inspected for this report is [run #38108500617](https://github.com/dheerendra7/ML-Ops/actions/runs/38108500617), completed successfully for commit [9a63be6](https://github.com/dheerendra7/ML-Ops/commit/9a63be63d0c94094fd033d9cabeca6238f13658b). All five jobs passed: documentation/example validation, KFP v2 compilation plus local runtime tests, container smoke test, and Kubernetes lab integration on v1.34.3 and v1.35.0. This is evidence for that exact commit and its test scope; later commits require their own verification.
