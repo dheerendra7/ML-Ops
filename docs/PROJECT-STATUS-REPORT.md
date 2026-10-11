@@ -3,7 +3,7 @@
 **Report date:** 11 October 2026  
 **Repository:** [dheerendra7/ML-Ops](https://github.com/dheerendra7/ML-Ops)  
 **Reviewed branch:** main  
-**Reviewed code/test baseline:** [71dc3b4](https://github.com/dheerendra7/ML-Ops/commit/71dc3b484dc04c1d101d32dbfe8456322079ac3a)
+**Reviewed code/test baseline:** [f4c9803](https://github.com/dheerendra7/ML-Ops/commit/f4c980305d262434a4a18eaea1a312362682e43f)
 
 ## Executive summary
 
@@ -17,18 +17,19 @@ The standalone KFP backend smoke workflow passed in [run #38120495578](https://g
 
 ## Latest repository-wide CI evidence
 
-The repository-wide workflow completed successfully in [run #38120678566](https://github.com/dheerendra7/ML-Ops/actions/runs/38120678566) for reviewed code/test baseline [71dc3b4](https://github.com/dheerendra7/ML-Ops/commit/71dc3b484dc04c1d101d32dbfe8456322079ac3a). All five jobs passed: documentation/example validation, 17 backend-contract tests including actual CLI fail-fast behavior, KFP v2 compilation and local runtime tests, container smoke test, and Kubernetes integration on v1.34.3 and v1.35.0. This is scoped CI evidence, not proof of full Kubeflow or production-infrastructure readiness.
+The repository-wide workflow completed successfully in [run #38121503667](https://github.com/dheerendra7/ML-Ops/actions/runs/38121503667) for reviewed code/test baseline [f4c9803](https://github.com/dheerendra7/ML-Ops/commit/f4c980305d262434a4a18eaea1a312362682e43f). All five jobs passed: docs/examples, KFP compile/local runtime plus 17 backend-contract tests, container smoke, and Kubernetes v1.34.3/v1.35.0 integration. It also checked 13 external action refs for full commit-SHA pins and ran 10 policy tests, including mutable step-action and reusable-workflow fixtures. This is scoped CI evidence, not production certification.
 
 ## Status at a glance
 
 | Area | Status | Evidence and boundary |
 |---|---|---|
 | Learning path and technical guides | Implemented | README links to Kubernetes foundations, Kubeflow/KFP, containers, security, observability, lineage, cost controls, troubleshooting, and interview revision material. |
-| Documentation/example checks | Passed for reviewed code/test baseline | [Validation run #38120678566](https://github.com/dheerendra7/ML-Ops/actions/runs/38120678566) passed for commit 71dc3b4, including link/YAML/Python validation and example invariants. Later changes require their own run. |
+| Documentation/example checks | Passed for reviewed code/test baseline | [Validation run #38121503667](https://github.com/dheerendra7/ML-Ops/actions/runs/38121503667) passed for commit f4c9803, including relative-link, YAML/Python, workflow-action-pin and security-sensitive example checks. |
+| GitHub Actions supply-chain pinning | Passed in CI | 13 external action references use verified full 40-character commit SHAs; the policy checker rejects mutable tag/branch references for step actions and job-level reusable workflows. Ten policy regression tests pass in [run #38121503667](https://github.com/dheerendra7/ML-Ops/actions/runs/38121503667). This does not audit each action's internal/transitive dependencies. |
 | KFP compile and local quality-gate behavior | Implemented and tested in CI | The documentation workflow compiles the sample pipeline and runs local artifact-to-gate tests, including positive/negative outcomes, 17 score/threshold type and boundary cases, malformed Dataset rows, and invalid training offsets. These checks do not establish remote-backend or production-model quality. |
 | Standalone KFP backend smoke test | Passed in a recorded disposable-cluster run | [Run #38120495578](https://github.com/dheerendra7/ML-Ops/actions/runs/38120495578) passed the success and gate-specific rejection cases on standalone KFP 2.17.0 + Kind v1.34.3. It does not certify a full Kubeflow distribution. |
 | Core Kubernetes labs | Implemented; CI targets two pinned Kubernetes versions | ResourceQuota, LimitRange defaults, a sample Job, RBAC allow/deny, and synthetic Secret rotation are covered by the disposable Kind test script. Confirm the exact run and commit before treating a result as current evidence. |
-| Vault + External Secrets Operator lab | Passed in a recorded development-mode integration run | [Run #38078803152](https://github.com/dheerendra7/ML-Ops/actions/runs/38078803152) verified scoped Vault access, Secret sync, a non-root read-only consumer mount, and mounted-file rotation using synthetic values. This is not production Vault certification. |
+| Vault + External Secrets Operator lab | Passed in a recorded development-mode integration run | [SHA-pinned workflow run #38121235556](https://github.com/dheerendra7/ML-Ops/actions/runs/38121235556) passed Secret sync, least-privilege and rotation checks in disposable Kind. This remains dev-mode evidence, not production Vault certification. |
 | Full Kubeflow/community distribution | Not verified | Requires an explicitly selected distribution/release and a target environment with the relevant controllers and services. |
 | Real GPU execution | Not verified | The GPU YAML is intentionally a template; GPU hardware, drivers/device plugin, compatible image, and resource configuration must be supplied and tested. |
 | Production Vault identity/TLS/HA and other cloud secret providers | Not verified | Requires named target environments, production-safe identity/authentication configuration, TLS, and provider-specific integration tests. |
@@ -66,8 +67,8 @@ Do not call it **production-ready** until operational, security, reliability, co
 ## Evidence links
 
 - [Repository](https://github.com/dheerendra7/ML-Ops)
-- [Repository-wide validation for code/test baseline 71dc3b4](https://github.com/dheerendra7/ML-Ops/actions/runs/38120678566)
+- [Repository-wide validation for code/test baseline f4c9803](https://github.com/dheerendra7/ML-Ops/actions/runs/38121503667)
 - [Standalone KFP backend smoke-test evidence](https://github.com/dheerendra7/ML-Ops/actions/runs/38120495578)
-- [Vault + ESO development-mode integration evidence](https://github.com/dheerendra7/ML-Ops/actions/runs/38078803152)
+- [Vault + ESO integration after action SHA pinning](https://github.com/dheerendra7/ML-Ops/actions/runs/38121235556)
 - [Lab validation matrix](testing/lab-validation-matrix.md)
 - [Roadmap](../ROADMAP.md)
