@@ -34,6 +34,8 @@ jobs:
         run: python scripts/test_examples.py
       - name: Verify GitHub Actions use full commit SHAs
         run: python scripts/test_workflow_security.py
+      - name: Test immutable-reference policy behavior
+        run: python scripts/test_workflow_security_contract.py
       - name: Check Kubernetes lab Bash syntax
         run: bash -n scripts/test_kind_labs.sh && bash -n scripts/test_vault_external_secrets.sh
 

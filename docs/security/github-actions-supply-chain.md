@@ -6,7 +6,7 @@ GitHub's [secure-use guidance](https://docs.github.com/en/actions/reference/secu
 
 ## What this repository enforces
 
-- Every external action reference in `.github/workflows/` ends with a full 40-character commit SHA.
+- Every external action and reusable-workflow reference in `.github/workflows/` ends with a full 40-character commit SHA.
 - An inline version comment (for example, `# v7`) retains the upstream version label for reviewers and maintainers.
 - The `scripts/test_workflow_security.py` check runs in the normal validation workflow; a new tag- or branch-pinned action fails CI.
 - Workflow permissions remain explicitly scoped to `contents: read` unless a specific job needs otherwise.

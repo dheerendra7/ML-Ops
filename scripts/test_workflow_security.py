@@ -18,6 +18,31 @@ WORKFLOWS = ROOT / ".github" / "workflows"
 FULL_SHA_REF = re.compile(r"^.+@[0-9a-f]{40}$")
 
 
+def is_local_reference(reference: str) -> bool:
+    """Local actions/workflows resolve from the same checked-out revision."""
+    return reference.startswith("./")
+
+
+def is_pinned_reference(reference: str) -> bool:
+    """Return whether a non-local action/workflow ref uses a full lowercase SHA."""
+    return bool(FULL_SHA_REF.fullmatch(reference))
+
+
+def validate_reference(reference: object, location: str, failures: list[str]) -> int:
+    """Validate an action or reusable-workflow reference; return refs inspected."""
+    if not isinstance(reference, str) or not reference.strip():
+        failures.append(f"{location}: reference must be a non-empty string.")
+        return 0
+    if is_local_reference(reference):
+        return 0
+    if not is_pinned_reference(reference):
+        failures.append(
+            f"{location}: {reference!r} is not pinned to a full "
+            "40-character lowercase commit SHA."
+        )
+    return 1
+
+
 def main() -> int:
     failures: list[str] = []
     checked_refs = 0
@@ -41,10 +66,17 @@ def main() -> int:
             failures.append(f"{label}: workflow must define a jobs mapping.")
             continue
 
+        # Reusable workflows may be referenced at job level as well as
+        # actions referenced in individual steps. Enforce the same immutable
+        # ref policy for both forms.
         for job_name, job in jobs.items():
             if not isinstance(job, dict):
                 failures.append(f"{label}: job {job_name!r} must be a mapping.")
                 continue
+            if "uses" in job:
+                checked_refs += validate_reference(
+                    job["uses"], f"{label}: reusable workflow job {job_name!r}", failures
+                )
             steps = job.get("steps", [])
             if not isinstance(steps, list):
                 failures.append(f"{label}: job {job_name!r} steps must be a list.")
@@ -52,22 +84,9 @@ def main() -> int:
             for index, step in enumerate(steps, start=1):
                 if not isinstance(step, dict) or "uses" not in step:
                     continue
-                reference = step["uses"]
-                location = f"{label}: job {job_name!r}, step {index}"
-                if not isinstance(reference, str) or not reference.strip():
-                    failures.append(f"{location}: action reference must be a non-empty string.")
-                    continue
-                # Local actions are part of the checked-out source tree and use
-                # the same source revision as the workflow, so they do not use
-                # an external owner/repository@ref expression.
-                if reference.startswith("./"):
-                    continue
-                checked_refs += 1
-                if not FULL_SHA_REF.fullmatch(reference):
-                    failures.append(
-                        f"{location}: {reference!r} is not pinned to a full "
-                        "40-character lowercase commit SHA."
-                    )
+                checked_refs += validate_reference(
+                    step["uses"], f"{label}: job {job_name!r}, step {index}", failures
+                )
 
     if checked_refs == 0:
         failures.append("No external action references were inspected; verify the workflow scan.")
