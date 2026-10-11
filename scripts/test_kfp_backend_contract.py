@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import subprocess
 import sys
 import tempfile
 import unittest
@@ -105,6 +106,39 @@ class KfpBackendContractTests(unittest.TestCase):
     def test_cli_options_reject_negative_retry_delay(self) -> None:
         with self.assertRaisesRegex(ValueError, "--api-delay-seconds"):
             validate_cli_options(timeout_seconds=1, api_attempts=1, api_delay_seconds=-1)
+
+    def test_cli_rejects_invalid_options_before_compiling(self) -> None:
+        invalid_cases = (
+            ("timeout-zero", ["--timeout-seconds", "0"], "--timeout-seconds must be greater than zero"),
+            ("timeout-negative", ["--timeout-seconds", "-1"], "--timeout-seconds must be greater than zero"),
+            ("attempts-zero", ["--api-attempts", "0"], "--api-attempts must be at least 1"),
+            ("attempts-negative", ["--api-attempts", "-1"], "--api-attempts must be at least 1"),
+            ("delay-negative", ["--api-delay-seconds", "-1"], "--api-delay-seconds must be zero or greater"),
+        )
+        with tempfile.TemporaryDirectory(prefix="mlops-kfp-cli-options-") as temp_dir:
+            for case_name, option_args, expected_message in invalid_cases:
+                with self.subTest(case=case_name):
+                    package_path = Path(temp_dir) / f"{case_name}.yaml"
+                    command = [
+                        sys.executable,
+                        str(SCRIPTS / "test_kfp_backend.py"),
+                        "--package",
+                        str(package_path),
+                        *option_args,
+                    ]
+                    result = subprocess.run(
+                        command,
+                        capture_output=True,
+                        text=True,
+                        timeout=30,
+                        check=False,
+                    )
+                    self.assertEqual(
+                        result.returncode, 2, msg=f"stdout={result.stdout}\\nstderr={result.stderr}"
+                    )
+                    self.assertIn(expected_message, result.stderr)
+                    self.assertNotIn("Traceback (most recent call last)", result.stderr)
+                    self.assertFalse(package_path.exists(), "invalid CLI options must fail before compilation")
 
     def test_success_path_requires_expected_pipeline_tasks(self) -> None:
         verify_successful_run(valid_run("SUCCEEDED"))
