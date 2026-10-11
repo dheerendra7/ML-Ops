@@ -44,6 +44,10 @@ Start with [`docs/LEARNING-PATH.md`](docs/LEARNING-PATH.md), then use the topic 
 - [Source register](SOURCES.md)
 - [Roadmap](ROADMAP.md)
 
+## Project status and evidence
+
+- [Project status and validation report](docs/PROJECT-STATUS-REPORT.md) summarizes implemented areas, recorded CI evidence, explicit exclusions, and the remaining validation needed before broader production-readiness claims.
+
 ## Hands-on learning and automated checks
 
 - [Lab 01 — Kubernetes resource governance](docs/labs/resource-governance.md) walks through ResourceQuota, LimitRange, server-side dry run, expected quota rejection, troubleshooting, and cleanup.
