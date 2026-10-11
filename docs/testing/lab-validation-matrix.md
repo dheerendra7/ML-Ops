@@ -2,6 +2,10 @@
 
 This page distinguishes static checks from runtime tests. A check is considered **verified only when the corresponding GitHub Actions job for the current repository commit is completed successfully**. Queued or in-progress jobs are not evidence of a pass.
 
+## Latest repository-wide CI verification
+
+The documentation/examples workflow completed successfully for commit [9a63be6](https://github.com/dheerendra7/ML-Ops/commit/9a63be63d0c94094fd033d9cabeca6238f13658b) in [run #38108500617](https://github.com/dheerendra7/ML-Ops/actions/runs/38108500617). All five jobs passed: documentation/example checks, KFP v2 compile and local runtime, container smoke, Kubernetes integration on v1.34.3, and Kubernetes integration on v1.35.0. This evidence applies to that exact commit; check the workflow again after later changes.
+
 ## Automated repository checks
 
 | Check | What is actually exercised | What it does not prove |
