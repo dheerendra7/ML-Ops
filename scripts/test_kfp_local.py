@@ -55,14 +55,14 @@ def check_gate_boundaries() -> int:
     )
     checks += 1
 
-    for invalid_score in (-0.01, 1.01, math.nan, math.inf, -math.inf):
+    for invalid_score in (-0.01, 1.01, math.nan, math.inf, -math.inf, True, "0.9"):
         expect_value_error(
             lambda value=invalid_score: expect(score=value, minimum_score=0.8),
             f"invalid score {invalid_score!r} is rejected",
         )
         checks += 1
 
-    for invalid_threshold in (-0.01, 1.01, math.nan, math.inf, -math.inf):
+    for invalid_threshold in (-0.01, 1.01, math.nan, math.inf, -math.inf, True, "0.8"):
         expect_value_error(
             lambda value=invalid_threshold: expect(score=0.9, minimum_score=value),
             f"invalid threshold {invalid_threshold!r} is rejected",
@@ -111,13 +111,29 @@ def check_component_artifact_contracts() -> int:
 
     invalid_datasets = (
         ([], "empty Dataset artifact is rejected"),
-        ({ "x": 1.0, "y": 2.0 }, "non-list Dataset artifact is rejected"),
+        ({"x": 1.0, "y": 2.0}, "non-list Dataset artifact is rejected"),
         ([{"y": 1.0}], "Dataset row missing x is rejected"),
+        ([{"x": 1.0}], "Dataset row missing y is rejected"),
+        (["not-a-row"], "non-object Dataset row is rejected"),
         ([{"x": "not-numeric", "y": 1.0}], "non-numeric Dataset values are rejected"),
-        ([{"x": math.nan, "y": 1.0}], "non-finite Dataset values are rejected"),
+        ([{"x": math.nan, "y": 1.0}], "non-finite feature value is rejected"),
+        ([{"x": 1.0, "y": math.inf}], "non-finite target value is rejected"),
     )
     for rows, description in invalid_datasets:
         expect_value_error(lambda value=rows: call_train_component(value), description)
+        checks += 1
+
+    invalid_offsets = (
+        (math.nan, "NaN training offset is rejected"),
+        (math.inf, "infinite training offset is rejected"),
+        (True, "boolean training offset is rejected"),
+        ("bad", "non-numeric training offset is rejected"),
+    )
+    for offset, description in invalid_offsets:
+        expect_value_error(
+            lambda value=offset: call_train_component(valid_rows, offset=value),
+            description,
+        )
         checks += 1
 
     score = call_evaluation_component(
