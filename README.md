@@ -30,6 +30,7 @@ Start with [`docs/LEARNING-PATH.md`](docs/LEARNING-PATH.md), then use the topic 
 - [Kubernetes resource controls](docs/kubernetes-foundations/resource-controls.md)
 - [Kubernetes workloads and configuration](docs/kubernetes-foundations/workloads-and-configuration.md)
 - [Container image security and reproducibility](docs/containers/image-security-and-reproducibility.md)
+- [GitHub Actions supply-chain hardening](docs/security/github-actions-supply-chain.md)
 - [KFP lifecycle, artifacts, caching, retries, and quality gates](docs/kubeflow/pipeline-lifecycle-artifacts-caching-retries.md)
 - [Model evaluation gates and promotion](docs/production/model-evaluation-and-promotion.md)
 - [Observability for ML pipelines](docs/production/observability-for-ml-pipelines.md)

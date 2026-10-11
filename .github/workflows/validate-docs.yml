@@ -18,10 +18,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
       - name: Set up Python
-        uses: actions/setup-python@v7
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7
         with:
           python-version: "3.12"
 
@@ -32,6 +32,8 @@ jobs:
         run: python scripts/validate_docs.py
       - name: Test security-sensitive example invariants
         run: python scripts/test_examples.py
+      - name: Verify GitHub Actions use full commit SHAs
+        run: python scripts/test_workflow_security.py
       - name: Check Kubernetes lab Bash syntax
         run: bash -n scripts/test_kind_labs.sh && bash -n scripts/test_vault_external_secrets.sh
 
@@ -42,10 +44,10 @@ jobs:
       contents: read
     steps:
       - name: Check out repository
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
       - name: Set up Python
-        uses: actions/setup-python@v7
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7
         with:
           python-version: "3.12"
 
@@ -70,7 +72,7 @@ jobs:
       contents: read
     steps:
       - name: Check out repository
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
       - name: Build the sample image
         run: docker build -t mlops-handbook-smoke:ci examples/container-image
@@ -95,10 +97,10 @@ jobs:
       contents: read
     steps:
       - name: Check out repository
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
       - name: Create digest-pinned disposable Kubernetes cluster
-        uses: helm/kind-action@v1.14.0
+        uses: helm/kind-action@ef37e7f390d99f746eb8b610417061a60e82a6cc # v1.14.0
         with:
           node_image: ${{ matrix.node_image }}
           kubectl_version: ${{ matrix.kubectl_version }}
