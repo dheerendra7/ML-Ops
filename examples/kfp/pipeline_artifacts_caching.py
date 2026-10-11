@@ -41,6 +41,12 @@ def train_toy_model(
         rows = json.load(handle)
     if not isinstance(rows, list) or not rows:
         raise ValueError("Training dataset must be a non-empty JSON list")
+    if (
+        isinstance(offset, bool)
+        or not isinstance(offset, (int, float))
+        or not math.isfinite(offset)
+    ):
+        raise ValueError("Training offset must be a finite number")
 
     targets = []
     for index, row in enumerate(rows):
@@ -106,11 +112,22 @@ def enforce_quality_gate(score: float, minimum_score: float) -> str:
     """Fail closed for invalid scores/thresholds or an unmet quality criterion."""
     import math
 
-    if not math.isfinite(score) or not 0.0 <= score <= 1.0:
-        raise ValueError(f"Score must be finite and in [0, 1], got {score}")
-    if not math.isfinite(minimum_score) or not 0.0 <= minimum_score <= 1.0:
+    if (
+        isinstance(score, bool)
+        or not isinstance(score, (int, float))
+        or not math.isfinite(score)
+        or not 0.0 <= score <= 1.0
+    ):
+        raise ValueError(f"Score must be a finite number in [0, 1], got {score!r}")
+    if (
+        isinstance(minimum_score, bool)
+        or not isinstance(minimum_score, (int, float))
+        or not math.isfinite(minimum_score)
+        or not 0.0 <= minimum_score <= 1.0
+    ):
         raise ValueError(
-            f"Minimum score must be finite and in [0, 1], got {minimum_score}"
+            "Minimum score must be a finite number in [0, 1], "
+            f"got {minimum_score!r}"
         )
     if score < minimum_score:
         raise ValueError(
