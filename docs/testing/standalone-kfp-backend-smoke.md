@@ -7,6 +7,10 @@ This repository has two separate KFP test layers:
 
 The second layer is deliberately separate from the normal handbook CI because installing a standalone KFP control plane takes substantially longer and pulls multiple backend/container images.
 
+## Latest recorded validation
+
+The standalone backend smoke test passed on 11 October 2026 in [workflow run #38120495578](https://github.com/dheerendra7/ML-Ops/actions/runs/38120495578), for the pipeline/script revision at commit `842b1d321e00d787b3691b5f965a54b6d25fa6e7`. The passing candidate completed all expected pipeline tasks; the rejected candidate failed specifically at the quality-gate task after upstream tasks succeeded. The current main code/test baseline [71dc3b4](https://github.com/dheerendra7/ML-Ops/commit/71dc3b484dc04c1d101d32dbfe8456322079ac3a) also passed all five repository CI jobs in [run #38120678566](https://github.com/dheerendra7/ML-Ops/actions/runs/38120678566), including the 17 backend-contract tests. This does not certify a full Kubeflow/community distribution or production deployment.
+
 ## What the backend smoke test is supposed to verify
 
 The workflow at [kfp-backend-smoke.yml](../../.github/workflows/kfp-backend-smoke.yml) creates a disposable Kubernetes 1.34.3 cluster, installs the KFP 2.17.0 cluster-scoped resources and platform-agnostic overlay, then submits two runs with the pinned Python SDK:
