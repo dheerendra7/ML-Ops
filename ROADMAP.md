@@ -38,7 +38,7 @@ This roadmap describes learning-content priorities, not promised release dates.
 - [x] Add an actionable observability guide covering logs, metrics, traces, alert design and model/data signals.
 - [x] Add a lineage/run-record template and practical cost/GPU scheduling guidance with cluster-specific caveats.
 - [x] Add a synthetic KFP artifact-to-quality-gate pipeline and compile it in CI.
-- [x] Run the synthetic KFP pipeline through KFP DockerRunner in CI; verify artifact hand-off, successful output, expected gate rejection, and 13 score/threshold boundary cases.
+- [x] Run the synthetic KFP pipeline through KFP DockerRunner in CI; verify artifact hand-off, successful output, expected gate rejection, and 17 score/threshold type and boundary cases, malformed Dataset row checks, and invalid training-offset checks.
 - [x] Extend repository checks to syntax-check Python files.
 - [x] Add a dedicated disposable Kind workflow that installs standalone KFP and submits real API-based success/rejection runs; the revised task-state, compiled artifact-binding and gate-rejection checks passed in [run #38077683009](https://github.com/dheerendra7/ML-Ops/actions/runs/38077683009). The workflow-only concurrency hardening was also re-verified successfully in [run #38078560808](https://github.com/dheerendra7/ML-Ops/actions/runs/38078560808).
 - [x] Add fast KFP backend-contract regression tests for repeated internal executor nodes, required pipeline-task states, and compiled Dataset/Model artifact bindings; the regression CI passed in [run #38077670702](https://github.com/dheerendra7/ML-Ops/actions/runs/38077670702).
