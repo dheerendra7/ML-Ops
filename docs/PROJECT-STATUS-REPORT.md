@@ -13,7 +13,7 @@ Do not use one overall completion percentage: documentation, local tests, dispos
 
 ## Standalone KFP backend integration result
 
-The standalone KFP backend smoke workflow passed in [run #38120495578](https://github.com/dheerendra7/ML-Ops/actions/runs/38120495578) for pipeline/script commit [842b1d3](https://github.com/dheerendra7/ML-Ops/commit/842b1d321e00d787b3691b5f965a54b6d25fa6e7). It installed standalone KFP 2.17.0 into a disposable Kind v1.34.3 cluster, submitted a passing candidate run, and verified that the rejected candidate failed specifically at the quality gate after its upstream tasks succeeded. This is scoped backend integration evidence, not a full Kubeflow distribution or production certification.
+The standalone KFP backend smoke workflow passed in [run #38121235557](https://github.com/dheerendra7/ML-Ops/actions/runs/38121235557) after the GitHub Actions references were pinned to immutable commit SHAs. The run used standalone KFP 2.17.0 on a disposable Kind v1.34.3 cluster, verified API health and compiled Dataset/Model artifact bindings, and completed the passing candidate run `0818fa69-10e3-4a5e-9e88-85638ce03d5b`. The intentionally rejected candidate `cbbf7e31-e635-4c21-9d98-534f58b9cf6a` failed specifically at the quality gate after upstream artifact-consuming tasks succeeded. This remains focused backend integration evidence, not a full Kubeflow distribution or production certification.
 
 ## Latest repository-wide CI evidence
 
@@ -27,7 +27,7 @@ The repository-wide workflow completed successfully in [run #38121503667](https:
 | Documentation/example checks | Passed for reviewed code/test baseline | [Validation run #38121503667](https://github.com/dheerendra7/ML-Ops/actions/runs/38121503667) passed for commit f4c9803, including relative-link, YAML/Python, workflow-action-pin and security-sensitive example checks. |
 | GitHub Actions supply-chain pinning | Passed in CI | 13 external action references use verified full 40-character commit SHAs; the policy checker rejects mutable tag/branch references for step actions and job-level reusable workflows. Ten policy regression tests pass in [run #38121503667](https://github.com/dheerendra7/ML-Ops/actions/runs/38121503667). This does not audit each action's internal/transitive dependencies. |
 | KFP compile and local quality-gate behavior | Implemented and tested in CI | The documentation workflow compiles the sample pipeline and runs local artifact-to-gate tests, including positive/negative outcomes, 17 score/threshold type and boundary cases, malformed Dataset rows, and invalid training offsets. These checks do not establish remote-backend or production-model quality. |
-| Standalone KFP backend smoke test | Passed in a recorded disposable-cluster run | [Run #38120495578](https://github.com/dheerendra7/ML-Ops/actions/runs/38120495578) passed the success and gate-specific rejection cases on standalone KFP 2.17.0 + Kind v1.34.3. It does not certify a full Kubeflow distribution. |
+| Standalone KFP backend smoke test | Passed in a recorded disposable-cluster run | [SHA-pinned workflow run #38121235557](https://github.com/dheerendra7/ML-Ops/actions/runs/38121235557) passed the API, compiled bindings, positive pipeline execution and quality-gate-specific rejection on KFP 2.17.0 + Kind v1.34.3. It does not certify a full Kubeflow distribution. |
 | Core Kubernetes labs | Implemented; CI targets two pinned Kubernetes versions | ResourceQuota, LimitRange defaults, a sample Job, RBAC allow/deny, and synthetic Secret rotation are covered by the disposable Kind test script. Confirm the exact run and commit before treating a result as current evidence. |
 | Vault + External Secrets Operator lab | Passed in a recorded development-mode integration run | [SHA-pinned workflow run #38121235556](https://github.com/dheerendra7/ML-Ops/actions/runs/38121235556) passed Secret sync, least-privilege and rotation checks in disposable Kind. This remains dev-mode evidence, not production Vault certification. |
 | Full Kubeflow/community distribution | Not verified | Requires an explicitly selected distribution/release and a target environment with the relevant controllers and services. |
@@ -68,7 +68,7 @@ Do not call it **production-ready** until operational, security, reliability, co
 
 - [Repository](https://github.com/dheerendra7/ML-Ops)
 - [Repository-wide validation for code/test baseline f4c9803](https://github.com/dheerendra7/ML-Ops/actions/runs/38121503667)
-- [Standalone KFP backend smoke-test evidence](https://github.com/dheerendra7/ML-Ops/actions/runs/38120495578)
+- [Standalone KFP backend smoke-test evidence after SHA pinning](https://github.com/dheerendra7/ML-Ops/actions/runs/38121235557)
 - [Vault + ESO integration after action SHA pinning](https://github.com/dheerendra7/ML-Ops/actions/runs/38121235556)
 - [Lab validation matrix](testing/lab-validation-matrix.md)
 - [Roadmap](../ROADMAP.md)
