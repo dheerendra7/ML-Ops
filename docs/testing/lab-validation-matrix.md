@@ -4,7 +4,7 @@ This page distinguishes static checks from runtime tests. A check is considered 
 
 ## Latest repository-wide CI verification
 
-The documentation/examples workflow completed successfully for commit [9a63be6](https://github.com/dheerendra7/ML-Ops/commit/9a63be63d0c94094fd033d9cabeca6238f13658b) in [run #38108500617](https://github.com/dheerendra7/ML-Ops/actions/runs/38108500617). All five jobs passed: documentation/example checks, KFP v2 compile and local runtime, container smoke, Kubernetes integration on v1.34.3, and Kubernetes integration on v1.35.0. This evidence applies to that exact commit; check the workflow again after later changes.
+The documentation/examples workflow completed successfully for implementation baseline [842b1d3](https://github.com/dheerendra7/ML-Ops/commit/842b1d321e00d787b3691b5f965a54b6d25fa6e7) in [run #38120495567](https://github.com/dheerendra7/ML-Ops/actions/runs/38120495567). All five jobs passed: documentation/example checks, the 16-test backend-contract suite plus KFP compile/local runtime, container smoke, and Kubernetes integration on v1.34.3 and v1.35.0. This evidence applies to that exact implementation baseline; verify the exact newer commit and run before treating later changes as tested.
 
 ## Automated repository checks
 
