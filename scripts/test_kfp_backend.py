@@ -180,6 +180,18 @@ def verify_rejected_run(run_detail: Any) -> None:
     )
 
 
+def validate_cli_options(
+    timeout_seconds: int, api_attempts: int, api_delay_seconds: int
+) -> None:
+    """Reject unusable wait/retry settings before making remote API calls."""
+    if timeout_seconds <= 0:
+        raise ValueError("--timeout-seconds must be greater than zero")
+    if api_attempts < 1:
+        raise ValueError("--api-attempts must be at least 1")
+    if api_delay_seconds < 0:
+        raise ValueError("--api-delay-seconds must be zero or greater")
+
+
 def wait_for_api(host: str, attempts: int, delay_seconds: int) -> Client:
     last_error: Exception | None = None
     for attempt in range(1, attempts + 1):
@@ -212,6 +224,12 @@ def main() -> int:
     parser.add_argument("--api-attempts", type=int, default=60)
     parser.add_argument("--api-delay-seconds", type=int, default=2)
     args = parser.parse_args()
+    try:
+        validate_cli_options(
+            args.timeout_seconds, args.api_attempts, args.api_delay_seconds
+        )
+    except ValueError as exc:
+        parser.error(str(exc))
 
     package_path = Path(args.package).resolve()
     package_path.parent.mkdir(parents=True, exist_ok=True)

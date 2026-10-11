@@ -31,6 +31,16 @@ The optional workflow triggers on changes to the KFP example, backend test scrip
 - [Remote submission test script](../../scripts/test_kfp_backend.py)
 - [Synthetic pipeline source](../../examples/kfp/pipeline_artifacts_caching.py)
 
+## CLI guardrails
+
+The remote smoke-test script validates its wait/retry options before compiling or submitting a run:
+
+- `--timeout-seconds` must be greater than zero.
+- `--api-attempts` must be at least 1.
+- `--api-delay-seconds` may be zero for immediate retries, but cannot be negative.
+
+The backend-free contract tests exercise both valid boundary values and invalid values, so a bad setting fails fast with an argument error instead of entering the API polling path.
+
 Check the exact commit, workflow run and job conclusion. A queued, running, failed or cancelled run does not count as backend validation.
 
 ## Why the workflow installs platform-agnostic

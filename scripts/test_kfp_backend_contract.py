@@ -22,6 +22,7 @@ from test_kfp_backend import (  # noqa: E402
     verify_compiled_artifact_wiring,
     verify_rejected_run,
     verify_successful_run,
+    validate_cli_options,
 )
 from examples.kfp.pipeline_artifacts_caching import (  # noqa: E402
     artifact_and_quality_gate_pipeline,
@@ -86,6 +87,25 @@ def valid_pipeline_spec() -> dict[str, Any]:
 
 
 class KfpBackendContractTests(unittest.TestCase):
+    def test_cli_options_accept_minimum_valid_values(self) -> None:
+        validate_cli_options(timeout_seconds=1, api_attempts=1, api_delay_seconds=0)
+
+    def test_cli_options_reject_non_positive_timeout(self) -> None:
+        for timeout in (0, -1):
+            with self.subTest(timeout_seconds=timeout):
+                with self.assertRaisesRegex(ValueError, "--timeout-seconds"):
+                    validate_cli_options(timeout, api_attempts=1, api_delay_seconds=0)
+
+    def test_cli_options_reject_non_positive_api_attempts(self) -> None:
+        for attempts in (0, -1):
+            with self.subTest(api_attempts=attempts):
+                with self.assertRaisesRegex(ValueError, "--api-attempts"):
+                    validate_cli_options(timeout_seconds=1, api_attempts=attempts, api_delay_seconds=0)
+
+    def test_cli_options_reject_negative_retry_delay(self) -> None:
+        with self.assertRaisesRegex(ValueError, "--api-delay-seconds"):
+            validate_cli_options(timeout_seconds=1, api_attempts=1, api_delay_seconds=-1)
+
     def test_success_path_requires_expected_pipeline_tasks(self) -> None:
         verify_successful_run(valid_run("SUCCEEDED"))
 
